@@ -1,28 +1,33 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <v-app>
+    <v-app-bar app dark color="light-blue darken-4 ">
+      <img
+        alt="popcorn"
+        width="38"
+        src="./assets/clapperboard-white.png"
+        style="margin-right: 20px"
+      />
+      <v-toolbar-title>CineManager</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <div v-if="isLogged">
+        <v-btn text rounded>Logout</v-btn>
+      </div>
+    </v-app-bar>
+    <v-content>
+      <login :isLogged="isLogged" />
+    </v-content>
+  </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import Login from "./components/Login.vue";
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    Login,
+  },
+  data: () => ({
+    isLogged: false,
+  }),
+};
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
