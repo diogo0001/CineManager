@@ -1,7 +1,6 @@
 <template>
-  <v-container :key="align">
-    <v-card class="mx-auto mt-12 " max-width="374">
-      <!-- <v-card-title>Login</v-card-title> -->
+  <div class="container">
+    <v-card class="mx-auto login"  :elevation="2">
       <v-card-text>
         <v-text-field label="Email" type="email" />
         <v-text-field
@@ -10,18 +9,12 @@
           @click:append="showPassord = !showPassord"
           :append-icon="showPassord ? 'mdi-eye' : 'mdi-eye-off'"
         />
-      <!-- <v-divider></v-divider> -->
-
-        <v-btn class="login-btn" color="indigo" outlined  @click="login">Login</v-btn>
-
+        <v-btn class="login-btn" color="indigo" outlined @click="login()"
+          >Login</v-btn
+        >
       </v-card-text>
-      <!-- <v-card-actions class="login-btn"> -->
-        <!-- <v-spacer></v-spacer> -->
-        <!-- <v-btn color="indigo  darken-1" text @click="register">Register</v-btn> -->
-        <!-- <v-btn color="indigo" outlined @click="login">Login</v-btn> -->
-      <!-- </v-card-actions> -->
     </v-card>
-  </v-container>
+  </div>
 </template>
 
 <script>
@@ -34,11 +27,8 @@ export default {
     };
   },
   methods: {
-    register() {
-      console.log("Registering...");
-    },
     login() {
-      console.log("Logging..." + this.isLogged);
+      // console.log("Logging..." + this.isLogged);
       // this.isLogged = true;
     },
   },
@@ -46,14 +36,20 @@ export default {
 </script>
 
 <style scoped>
-.login {
-  /* margin: auto;
-  text-align: center; */
-  width:380px;
+.container {
+  height: 100%;
+  width: 100%;
+  background: rgba(101, 196, 224, 0.116);
 }
 
-.login-btn{
-  margin:10px 0;
-  width:100%;
+.login {
+  max-width: 374px;
+  position: relative; 
+  top: 25%; 
+}
+
+.login-btn {
+  margin: 10px 0;
+  width: 100%;
 }
 </style>
