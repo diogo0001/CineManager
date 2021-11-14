@@ -1,16 +1,19 @@
 <template>
   <v-container id="app">
-    <custom-table
+    <crud-table
       :headers_p="headers"
       :items_p="items"
       :fields_p="fields"
+      @post="post"
+      @update="update"
+      @delete="remove"
     />
   </v-container>
 </template>
 
 <script>
 import { MoviesApi } from "../helpers/api";
-import CustomTable from './CustomTable.vue'
+import CrudTable from './CrudTable.vue'
 
 const itemInitial = {
         title:null,
@@ -23,13 +26,13 @@ const itemLabels = {
         title:'Título',
         img_url:'Imagem',
         description:'Descrição',
-        duration:'Duração',
+        duration:'Duração (min)',
       }
 
 export default {
   name:"Movies",
   components:{
-    CustomTable,
+    CrudTable,
   },
   props: {
 
@@ -68,7 +71,6 @@ export default {
         {
           text: "Título",
           align: "start",
-          sortable: false,
           value: "title",
         },
         {
@@ -84,14 +86,24 @@ export default {
           value: "description",
         },
         {
-          text: "Duração",
+          text: "Duração (min)",
           align: "start",
-          sortable: false,
           value: "duration",
         },
-        { text: "Actions", value: "actions", sortable: false },
+        { text: "Operações", value: "actions", sortable: false }, // colocar apenas para crud 
       ];
-
+    },
+    post(e){
+      console.log("Movies >>> POST "+ e);
+    },
+    update(e){
+      console.log("Movies >>> UPDATE "+ e);
+    },
+    remove(e){
+      console.log("Movies >>> DELETE "+ e);
+    },
+    getItem(e){
+      console.log("Movies >>> GET ITEM "+ e);
     }
   },
 };

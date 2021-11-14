@@ -1,18 +1,18 @@
 <template>
   <v-app>
     <router-view />
-    <!-- <nav-bar /> -->
+    <nav-bar />
   </v-app>
 </template>
 
 <script>
-// import NavBar from './components/NavBar.vue'
+import NavBar from './components/NavBar.vue'
 
 export default {
   name: 'App',
 
   components: {
-    // NavBar,
+    NavBar,
   },
 
   data: () => ({
@@ -20,3 +20,11 @@ export default {
   }),
 };
 </script>
+
+<style lang="css">
+
+body{
+  margin-top:64px;
+}
+
+</style>

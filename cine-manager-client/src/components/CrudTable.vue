@@ -1,13 +1,27 @@
 <template>
   <v-container id="app">
     <v-app id="inspire">
-      <v-data-table :headers="headers" :items="items" class="elevation-1">
+      <span class="title">{{ fields_p.title }}</span>
+      <v-data-table
+        :headers="headers"
+        :items="items"
+        :search="search"
+        class="elevation-2"
+      >
         <template v-slot:top>
           <v-toolbar flat>
-            <v-toolbar-title>{{ fields_p.title }}</v-toolbar-title>
-            <v-divider class="mx-4" inset vertical></v-divider>
+                <v-text-field
+                  dense
+                  outlined
+                  v-model="search"
+                  label="Buscar"
+                  append-icon="mdi-manage_search"
+                  single-line
+                  hide-details
+                  class="mr-4 search"
+                ></v-text-field>
             <v-spacer></v-spacer>
-            <v-dialog v-model="dialog" max-width="500px">
+              <v-dialog v-model="dialog" max-width="500px" v-if="fields_p.crud">
               <template v-slot:activator="{ on, attrs }">
                 <v-icon class="mr-2" v-bind="attrs" v-on="on">
                   mdi-plus-circle-outline
@@ -20,8 +34,14 @@
                 <v-card-text>
                   <v-container>
                     <v-row>
-                      <v-col cols="8" sm="4" md="4" v-for="(value, key) in editedItem" :key="key">
-                        <v-text-field 
+                      <v-col
+                        cols="8"
+                        sm="4"
+                        md="4"
+                        v-for="(value, key) in editedItem"
+                        :key="key"
+                      >
+                        <v-text-field
                           v-model="editedItem[key]"
                           :label="getEditLabels(key)"
                         ></v-text-field>
@@ -38,11 +58,11 @@
                   <v-btn color="blue darken-1" text @click="save"> Save </v-btn>
                 </v-card-actions>
               </v-card>
-            </v-dialog>
-            <v-dialog v-model="dialogDelete" max-width="500px">
+            </v-dialog>            
+            <v-dialog dark v-model="dialogDelete" max-width="510px">
               <v-card>
                 <v-card-title class="text-h5"
-                  >Are you sure you want to delete this item?</v-card-title
+                  >Tem certeza que deseja excluir esse item?</v-card-title
                 >
                 <v-card-actions>
                   <v-spacer></v-spacer>
@@ -73,22 +93,23 @@
 </template>
 
 <script>
-
 export default {
-  name:'CustomTable',
+  name: "CrudTable",
   props: {
-    fields_p:{
+    fields_p: {
       title: { default: "Tabela" },
       titleAddItem: { default: "Adicionar Item" },
       titleEditItem: { default: "Editar Item" },
-      editLabels:{},
-      editedItem:{},
+      editLabels: {},
+      editedItem: {},
       defaultItem: {},
+      crud:{ default: true },
     },
-    headers_p:{default:[]},
-    items_p:{default:[]},
+    headers_p: { default: [] },
+    items_p: { default: [] },
   },
   data: () => ({
+    search: "",
     dialog: false,
     dialogDelete: false,
     headers: [],
@@ -100,7 +121,9 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? this.fields_p.titleAddItem : this.fields_p.titleEditItem;
+      return this.editedIndex === -1
+        ? this.fields_p.titleAddItem
+        : this.fields_p.titleEditItem;
     },
   },
   watch: {
@@ -110,34 +133,29 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete();
     },
-    items(){
-
-    },
-    headers(){
-
-    }
+    items() {},
+    headers() {},
   },
   created() {
-    console.log("Table >>> created() ")
+    console.log("Table >>> created() ");
     this.initialize();
   },
-  beforeUpdate(){
-    console.log("Table >>> beforeUpdate()")
+  beforeUpdate() {
+    console.log("Table >>> beforeUpdate()");
   },
 
   methods: {
     initialize() {
-      this.editedItem = {...this.fields_p.editedItem},
-      this.defaultItem = {...this.fields_p.defaultItem},
-      this.headers=[...this.headers_p];
+      (this.editedItem = { ...this.fields_p.editedItem }),
+        (this.defaultItem = { ...this.fields_p.defaultItem }),
+        (this.headers = [...this.headers_p]);
       this.items = [...this.items_p];
-      console.log(`${this.headers.length}  ${this.items.length}`)
     },
 
     editItem(item) {
       this.editedIndex = this.items.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      console.log(`editedItem ${JSON.stringify(this.editedItem) }`)
+      // console.log(`editedItem ${JSON.stringify(this.editedItem) }`)
       this.dialog = true;
     },
 
@@ -148,6 +166,7 @@ export default {
     },
 
     deleteItemConfirm() {
+      this.$emit("delete");
       this.items.splice(this.editedIndex, 1);
       this.closeDelete();
     },
@@ -171,13 +190,18 @@ export default {
     save() {
       if (this.editedIndex > -1) {
         Object.assign(this.items[this.editedIndex], this.editedItem);
+        this.$emit("update");
       } else {
         this.items.push(this.editedItem);
+        this.$emit("post");
       }
       this.close();
     },
-    getEditLabels(label){
-      console.log(`getEditLabels ${label} -- ${this.fields_p.editLabels[label]}`)
+    details() {
+      this.$emit("details");
+    },
+    getEditLabels(label) {
+      // console.log(`getEditLabels ${label} -- ${this.fields_p.editLabels[label]}`)
       return this.fields_p.editLabels[label];
     },
   },
@@ -189,4 +213,10 @@ export default {
 .v-icon{
   color: rgb(38, 102, 158);
 } */
+.search{
+  max-width: 340px;
+}
+.title{
+  margin:0 auto 20px auto;
+}
 </style>
