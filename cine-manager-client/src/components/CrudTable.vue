@@ -1,12 +1,12 @@
 <template>
   <v-container id="app">
-    <v-app id="inspire">
+    <v-app id="app">
       <span class="title">{{ fields_p.title }}</span>
-      <v-data-table 
+      <v-data-table dark
         :headers="headers"
         :items="items"
         :search="search"
-        class="elevation-3"
+        class="elevation-2"
       >
         <template v-slot:top>
           <v-toolbar flat>
@@ -27,7 +27,7 @@
                   mdi-plus-circle-outline
                 </v-icon>
               </template>
-              <v-card dark>
+              <v-card >
                 <v-card-title>
                   <span class="text-h5">{{ formTitle }}</span>
                 </v-card-title>
@@ -53,13 +53,13 @@
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn color="blue darken-1" text @click="close">
-                    Cancel
+                    Cancelar
                   </v-btn>
-                  <v-btn color="blue darken-1" text @click="save"> Save </v-btn>
+                  <v-btn color="blue darken-1" text @click="save"> Salvar </v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>            
-            <v-dialog dark v-model="dialogDelete" max-width="510px">
+            <v-dialog  v-model="dialogDelete" max-width="510px">
               <v-card>
                 <v-card-title class="text-h5"
                   >Tem certeza que deseja excluir esse item?</v-card-title
@@ -85,7 +85,7 @@
           <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
         </template>
         <template v-slot:no-data>
-          <v-btn color="primary" @click="initialize"> Reset </v-btn>
+          <v-btn color="primary" @click="initialize"> Resetar </v-btn>
         </template>
       </v-data-table>
     </v-app>
@@ -200,6 +200,7 @@ export default {
       } else {
         this.items.push(this.editedItem);
         this.$emit("post");
+        // validar se os dados não são nulos -> ver required
       }
       this.close();
     },
@@ -231,6 +232,13 @@ export default {
   max-width: 340px;
 }
 .title{
-  margin:10px auto 20px auto;
+  /* margin:14px auto 14px 18px; */
+  padding: 16px 0 16px 18px;
+  width: 100%;
+  background: rgba(14, 66, 87, 0.959);
+  color: aliceblue;
+  border-radius: 6px 6px 0 0 ;
+  box-shadow: rgba(179, 179, 179, 0.74) 0 0 20px 1px;
 }
+
 </style>

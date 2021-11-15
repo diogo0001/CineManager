@@ -1,7 +1,7 @@
 <template>
   <div class="app">
     <side-bar/>
-    <v-container id="app">
+    <!-- <v-container id="app"> -->
       <crud-table
         :headers_p="headers"
         :items_p="items"
@@ -10,7 +10,7 @@
         @update="update"
         @delete="remove"
       />
-    </v-container>
+    <!-- </v-container> -->
   </div>
 </template>
 

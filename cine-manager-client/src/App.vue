@@ -1,16 +1,15 @@
 <template>
-  <v-app>
-    <router-view /> 
-    <nav-bar />    
+  <v-app class="app">
+    <router-view />
+    <nav-bar />
   </v-app>
 </template>
 
 <script>
-import NavBar from './components/NavBar.vue'
+import NavBar from "./components/NavBar.vue";
 
 export default {
-  name: 'App',
-
+  name: "App",
   components: {
     NavBar,
   },
@@ -22,16 +21,24 @@ export default {
 </script>
 
 <style lang="css">
-
-body{
-  margin-top:64px;
+body {
+  margin-top: 64px;
 }
-.app{
+/* fazer margin-top=52 se a tela for menor que 945 */ 
+
+.app {
   display: flex;
   justify-content: space-between;
-  background: rgba(109, 108, 99, 0.144);
+  background: rgb(196, 196, 196);
 }
 
+#app {
+  background: rgb(196, 196, 196);
+}
 
+a{
+  text-decoration: none;
+  color: white;
+}
 
 </style>
