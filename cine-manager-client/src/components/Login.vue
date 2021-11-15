@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <v-card class="mx-auto login"  :elevation="2">
+    <v-card  class="mx-auto login" :elevation="2">
       <v-card-text>
         <v-text-field label="Email" type="email" />
         <v-text-field
@@ -9,9 +9,9 @@
           @click:append="showPassord = !showPassord"
           :append-icon="showPassord ? 'mdi-eye' : 'mdi-eye-off'"
         />
-        <v-btn class="login-btn" color="indigo" outlined @click="login()"
-          >Login</v-btn
-        >
+        <v-btn class="login-btn" color="indigo" outlined @click="login()">
+          Login
+        </v-btn>
       </v-card-text>
     </v-card>
   </div>
@@ -37,15 +37,15 @@ export default {
 
 <style scoped>
 .container {
-  height: 100%;
+  height: 500px;
   width: 100%;
-  background: rgba(101, 196, 224, 0.116);
+  /* background: rgb(101, 195, 224); */
 }
 
 .login {
   max-width: 374px;
-  position: relative; 
-  top: 25%; 
+  position: relative;
+  top: 25%;
 }
 
 .login-btn {

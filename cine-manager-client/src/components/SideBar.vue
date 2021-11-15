@@ -1,6 +1,6 @@
 <template>
-  <v-app id="inspire">
-    <v-navigation-drawer v-model="drawer" :mini-variant.sync="mini" permanent>
+  <v-app >
+    <v-navigation-drawer dark v-model="drawer" :mini-variant.sync="mini" permanent>
       <v-list-item class="px-2">
         <v-list-item-avatar>
           <v-icon large>mdi-account-circle</v-icon>
@@ -48,8 +48,9 @@ export default {
 </script>
 
 <style lang="css" scoped>
+
+
 .v-navigation-drawer {
   background: rgb(14, 66, 87);
-  color: rgb(228, 228, 228);
 }
 </style>

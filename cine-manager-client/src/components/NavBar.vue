@@ -1,6 +1,6 @@
 <template>
-  <v-app id="inspire">
-    <v-app-bar app dark color="rgb(19, 95, 124)">
+  <!-- <div class="dam"> -->
+    <v-toolbar dark color="rgb(19, 95, 124)">
       <img
         alt="popcorn"
         width="38"
@@ -12,8 +12,8 @@
       <div>
         <v-btn text rounded>Sair</v-btn>
       </div>
-    </v-app-bar> 
-  </v-app>
+    </v-toolbar> 
+  <!-- </div> -->
 </template>
 
 <script>
@@ -30,4 +30,5 @@ export default {
 </script>
 
 <style lang="css" scoped>
+
 </style>

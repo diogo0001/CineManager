@@ -1,7 +1,7 @@
 <template>
   <v-app class="app">
-    <router-view />
     <nav-bar />
+    <router-view />
   </v-app>
 </template>
 
@@ -22,18 +22,18 @@ export default {
 
 <style lang="css">
 body {
-  margin-top: 64px;
+  /* margin-top: 64px; */
 }
 /* fazer margin-top=52 se a tela for menor que 945 */ 
 
 .app {
   display: flex;
   justify-content: space-between;
-  background: rgb(196, 196, 196);
+  /* background: rgb(196, 196, 196); */
 }
 
 #app {
-  background: rgb(196, 196, 196);
+  /* background: rgb(196, 196, 196); */
 }
 
 a{

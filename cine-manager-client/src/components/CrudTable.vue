@@ -2,7 +2,7 @@
   <v-container id="app">
     <v-app id="app">
       <span class="title">{{ fields_p.title }}</span>
-      <v-data-table dark
+      <v-data-table 
         :headers="headers"
         :items="items"
         :search="search"
@@ -232,13 +232,16 @@ export default {
   max-width: 340px;
 }
 .title{
-  /* margin:14px auto 14px 18px; */
+  margin-top:-10px;
   padding: 16px 0 16px 18px;
   width: 100%;
-  background: rgba(14, 66, 87, 0.959);
-  color: aliceblue;
-  border-radius: 6px 6px 0 0 ;
-  box-shadow: rgba(179, 179, 179, 0.74) 0 0 20px 1px;
+  /* background: rgba(14, 66, 87, 0.959); n1 */
+  
+  /* background: rgba(1, 55, 77, 0.959);
+  color: aliceblue; */
+
+  /* border-radius: 6px 6px 0 0 ; */
+  /* box-shadow: rgba(179, 179, 179, 0.74) 0 0 20px 1px; */
 }
 
 </style>
