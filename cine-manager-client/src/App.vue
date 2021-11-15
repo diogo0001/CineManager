@@ -1,7 +1,7 @@
 <template>
   <v-app>
-    <router-view />
-    <nav-bar />
+    <router-view /> 
+    <nav-bar />    
   </v-app>
 </template>
 
@@ -26,5 +26,12 @@ export default {
 body{
   margin-top:64px;
 }
+.app{
+  display: flex;
+  justify-content: space-between;
+  background: rgba(109, 108, 99, 0.144);
+}
+
+
 
 </style>

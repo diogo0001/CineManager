@@ -2,11 +2,11 @@
   <v-container id="app">
     <v-app id="inspire">
       <span class="title">{{ fields_p.title }}</span>
-      <v-data-table
+      <v-data-table 
         :headers="headers"
         :items="items"
         :search="search"
-        class="elevation-2"
+        class="elevation-3"
       >
         <template v-slot:top>
           <v-toolbar flat>
@@ -100,10 +100,14 @@ export default {
       title: { default: "Tabela" },
       titleAddItem: { default: "Adicionar Item" },
       titleEditItem: { default: "Editar Item" },
-      editLabels: {},
-      editedItem: {},
-      defaultItem: {},
+      editedItem: {default: {}},
+      defaultItem: {default: {}},
+      // itemTemplate:{default: {}},
       crud:{ default: true },
+    },
+    options:{
+      selectItems:{ default: false },
+      textField:{ default: true }
     },
     headers_p: { default: [] },
     items_p: { default: [] },
@@ -117,6 +121,7 @@ export default {
     editedIndex: -1,
     editedItem: {},
     defaultItem: {},
+    editLabels:{}
   }),
 
   computed: {
@@ -150,6 +155,7 @@ export default {
         (this.defaultItem = { ...this.fields_p.defaultItem }),
         (this.headers = [...this.headers_p]);
       this.items = [...this.items_p];
+      this.getLabelsFromHeader();
     },
 
     editItem(item) {
@@ -202,8 +208,16 @@ export default {
     },
     getEditLabels(label) {
       // console.log(`getEditLabels ${label} -- ${this.fields_p.editLabels[label]}`)
-      return this.fields_p.editLabels[label];
+      return this.editLabels[label];
     },
+    getLabelsFromHeader(){
+      let obj = {}
+      this.headers.map((item)=>{
+          obj[item.value] = item.text
+      });
+      // console.log(JSON.stringify(obj))
+      this.editLabels = obj;
+    }
   },
 };
 </script>
@@ -217,6 +231,6 @@ export default {
   max-width: 340px;
 }
 .title{
-  margin:0 auto 20px auto;
+  margin:10px auto 20px auto;
 }
 </style>

@@ -1,71 +1,72 @@
 <template>
-  <v-container id="app">
-    <crud-table
-      :headers_p="headers"
-      :items_p="items"
-      :fields_p="fields"
-      @post="post"
-      @update="update"
-      @delete="remove"
-    />
-  </v-container>
+  <div class="app">
+    <side-bar />
+    <v-container id="app">
+      <crud-table
+        :headers_p="headers"
+        :items_p="items"
+        :fields_p="fields"
+        @post="post"
+        @update="update"
+        @delete="remove"
+      />
+    </v-container>
+  </div>
 </template>
 
 <script>
 import { MoviesApi } from "../helpers/api";
-import CrudTable from './CrudTable.vue'
+import CrudTable from "./CrudTable.vue";
+import SideBar from "./SideBar.vue";
 
 const itemInitial = {
-        title:null,
-        img_url:null,
-        description:null,
-        duration:null,
-      }
+  title: null,
+  img_url: null,
+  description: null,
+  duration: null,
+};
 
 const itemLabels = {
-        title:'Título',
-        img_url:'Imagem',
-        description:'Descrição',
-        duration:'Duração (min)',
-      }
+  title: "Título",
+  img_url: "Imagem",
+  description: "Descrição",
+  duration: "Duração (min)",
+};
 
 export default {
-  name:"Movies",
-  components:{
+  name: "Movies",
+  components: {
     CrudTable,
+    SideBar,
   },
-  props: {
-
-  },
+  props: {},
   data: () => ({
-    headers:[],
-    items:[],
-    fields:{
+    headers: [],
+    items: [],
+    fields: {
       title: "Filmes",
-      titleAddItem: "Adicionar Filme" ,
-      titleEditItem: "Editar Filme" ,
+      titleAddItem: "Adicionar Filme",
+      titleEditItem: "Editar Filme",
       editLabels: itemLabels,
       editedItem: itemInitial,
       defaultItem: itemInitial,
+      crud: true,
     },
-    headers_p:{default:[]},
-    items_p:{default:[]},
+    headers_p: { default: [] },
+    items_p: { default: [] },
   }),
-  computed: {
-  },
-  watch: {
-
-  },
+  computed: {},
+  watch: {},
   created() {
     this.loadData();
-    console.log("Movies >>> created() ")
+    console.log("Movies >>> created() ");
   },
-  beforeUpdate(){
-    console.log("Movies >>> beforeUpdate()")
+  beforeUpdate() {
+    console.log("Movies >>> beforeUpdate()");
   },
 
   methods: {
-    loadData(){
+    loadData() {
       this.items = MoviesApi.getMovies();
       this.headers = [
         {
@@ -90,21 +91,21 @@ export default {
           align: "start",
           value: "duration",
         },
-        { text: "Operações", value: "actions", sortable: false }, // colocar apenas para crud 
+        { text: "Operações", value: "actions", sortable: false }, // colocar apenas para crud
       ];
     },
-    post(e){
-      console.log("Movies >>> POST "+ e);
+    post(e) {
+      console.log("Movies >>> POST " + e);
     },
-    update(e){
-      console.log("Movies >>> UPDATE "+ e);
+    update(e) {
+      console.log("Movies >>> UPDATE " + e);
     },
-    remove(e){
-      console.log("Movies >>> DELETE "+ e);
+    remove(e) {
+      console.log("Movies >>> DELETE " + e);
     },
-    getItem(e){
-      console.log("Movies >>> GET ITEM "+ e);
-    }
+    getItem(e) {
+      console.log("Movies >>> GET ITEM " + e);
+    },
   },
 };
 </script>

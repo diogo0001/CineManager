@@ -1,68 +1,68 @@
 <template>
-  <v-container id="app">
-    <crud-table
-      :headers_p="headers"
-      :items_p="items"
-      :fields_p="fields"
-      @post="post"
-      @update="update"
-      @delete="remove"
-    />
-  </v-container>
+  <div class="app">
+    <side-bar />
+    <v-container id="app">
+      <crud-table
+        :headers_p="headers"
+        :items_p="items"
+        :fields_p="fields"
+        @post="post"
+        @update="update"
+        @delete="remove"
+      />
+    </v-container>
+  </div>
 </template>
 
 <script>
 import { RoomsApi } from "../helpers/api";
-import CrudTable from './CrudTable.vue'
+import CrudTable from "./CrudTable.vue";
+import SideBar from "./SideBar.vue";
 
 const itemInitial = {
-        name:null,
-        seats_number:null,
-      }
+  name: null,
+  seats_number: null,
+};
 
 const itemLabels = {
-        name:'Sala 01',
-        seats_number:100,
-      }
+  name: "Sala 01",
+  seats_number: 100,
+};
 
 export default {
-  name:"Rooms",
-  components:{
+  name: "Rooms",
+  components: {
     CrudTable,
+    SideBar,
   },
-  props: {
-
-  },
+  props: {},
   data: () => ({
-    headers:[],
-    items:[],
-    fields:{
+    headers: [],
+    items: [],
+    fields: {
       title: "Salas",
-      titleAddItem: "Adicionar Sala" ,
-      titleEditItem: "Editar Sala" ,
+      titleAddItem: "Adicionar Sala",
+      titleEditItem: "Editar Sala",
       editLabels: itemLabels,
       editedItem: itemInitial,
       defaultItem: itemInitial,
-      crud:false,
+      crud: false,
     },
-    headers_p:{default:[]},
-    items_p:{default:[]},
+    headers_p: { default: [] },
+    items_p: { default: [] },
   }),
-  computed: {
-  },
-  watch: {
-
-  },
+  computed: {},
+  watch: {},
   created() {
     this.loadData();
-    console.log("Rooms >>> created() ")
+    console.log("Rooms >>> created() ");
   },
-  beforeUpdate(){
-    console.log("Rooms >>> beforeUpdate()")
+  beforeUpdate() {
+    console.log("Rooms >>> beforeUpdate()");
   },
 
   methods: {
-    loadData(){
+    loadData() {
       this.items = RoomsApi.getRooms();
       this.headers = [
         {
@@ -74,21 +74,21 @@ export default {
           text: "Número de Assentos",
           align: "start",
           value: "seats_number",
-        }
+        },
       ];
     },
-    post(e){
-      console.log("Rooms >>> POST "+ e);
+    post(e) {
+      console.log("Rooms >>> POST " + e);
     },
-    update(e){
-      console.log("Rooms >>> UPDATE "+ e);
+    update(e) {
+      console.log("Rooms >>> UPDATE " + e);
     },
-    remove(e){
-      console.log("Rooms >>> DELETE "+ e);
+    remove(e) {
+      console.log("Rooms >>> DELETE " + e);
     },
-    getItem(e){
-      console.log("Rooms >>> GET ITEM "+ e);
-    }
+    getItem(e) {
+      console.log("Rooms >>> GET ITEM " + e);
+    },
   },
 };
 </script>

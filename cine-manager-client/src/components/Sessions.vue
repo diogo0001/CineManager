@@ -1,80 +1,81 @@
 <template>
-  <v-container id="app">
-    <crud-table
-      :headers_p="headers"
-      :items_p="items"
-      :fields_p="fields"
-      @post="post"
-      @update="update"
-      @delete="remove"
-    />
-  </v-container>
+  <div class="app">
+    <side-bar/>
+    <v-container id="app">
+      <crud-table
+        :headers_p="headers"
+        :items_p="items"
+        :fields_p="fields"
+        @post="post"
+        @update="update"
+        @delete="remove"
+      />
+    </v-container>
+  </div>
 </template>
 
 <script>
 import { SessionsApi } from "../helpers/api";
-import CrudTable from './CrudTable.vue'
+import CrudTable from "./CrudTable.vue";
+import SideBar from "./SideBar.vue";
 
 const itemInitial = {
-        date:null,
-        ini_time:null,
-        end_time:null,
-        ticket_price:null,
-        animation:null,
-        audio:null,
-        movie:null,
-        room:null
-      }
+  date: null,
+  ini_time: null,
+  end_time: null,
+  ticket_price: null,
+  animation: [],
+  audio: [],
+  room: [],
+  movie: [],
+};
 
-const itemLabels = {
-        date:'14/11/2021',
-        ini_time:'13:00',
-        end_time:'14:30',
-        ticket_price:'30,00',
-        animation:'2D',
-        audio:'Dublado',
-        movie:'Hulk',
-        room:'Sala 01'
-      }
+// Implementar o tipo de input dinamicamente na tabela posteriormente
+// const itemTemplate = {
+//   date: "date",
+//   ini_time: "time",
+//   end_time: "time",
+//   ticket_price: "number",
+//   animation: "array",
+//   audio: "array",
+//   room: "array",
+//   movie: "array",
+// };
 
 export default {
-  name:"Sessions",
-  components:{
+  name: "Sessions",
+  components: {
     CrudTable,
+    SideBar,
   },
-  props: {
-
-  },
+  props: {},
   data: () => ({
-    headers:[],
-    items:[],
-    fields:{
+    headers: [],
+    items: [],
+    fields: {
       title: "Sessões",
-      titleAddItem: "Adicionar Sessão" ,
-      titleEditItem: "Editar Sessão" ,
-      editLabels: itemLabels,
+      titleAddItem: "Adicionar Sessão",
+      titleEditItem: "Editar Sessão",
       editedItem: itemInitial,
       defaultItem: itemInitial,
-      crud:true
+      // itemTemplate: itemTemplate,
+      crud: true,
     },
-    headers_p:{default:[]},
-    items_p:{default:[]},
+    headers_p: { default: [] },
+    items_p: { default: [] },
   }),
-  computed: {
-  },
-  watch: {
-
-  },
+  computed: {},
+  watch: {},
   created() {
     this.loadData();
-    console.log("Sessions >>> created() ")
+    console.log("Sessions >>> created()");
   },
-  beforeUpdate(){
-    console.log("Sessions >>> beforeUpdate()")
+  beforeUpdate() {
+    console.log("Sessions >>> beforeUpdate()");
   },
 
   methods: {
-    loadData(){
+    loadData() {
       this.items = SessionsApi.getSessions();
       this.headers = [
         {
@@ -105,7 +106,7 @@ export default {
           value: "end_time",
         },
         {
-          text: "Ingresso",
+          text: "Ingresso (R$)",
           align: "start",
           value: "ticket_price",
         },
@@ -119,23 +120,25 @@ export default {
           align: "start",
           value: "audio",
         },
-        { text: "Operações", value: "actions", sortable: false }, // colocar apenas para crud 
+        { text: "Operações", value: "actions", sortable: false },
       ];
     },
-    post(e){
-      console.log("Sessions >>> POST "+ e);
+    post(e) {
+      console.log("Sessions >>> POST " + e);
     },
-    update(e){
-      console.log("Sessions >>> UPDATE "+ e);
+    update(e) {
+      console.log("Sessions >>> UPDATE " + e);
     },
-    remove(e){
-      console.log("Sessions >>> DELETE "+ e);
+    remove(e) {
+      console.log("Sessions >>> DELETE " + e);
     },
-    getItem(e){
-      console.log("Sessions >>> GET ITEM "+ e);
-    }
+    getItem(e) {
+      console.log("Sessions >>> GET ITEM " + e);
+    },
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+
+</style>
