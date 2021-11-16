@@ -74,9 +74,6 @@ namespace CineManager.Migrations
                     b.Property<string>("Audio")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
 

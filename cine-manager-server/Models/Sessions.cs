@@ -12,7 +12,6 @@ namespace CineManager.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public int SessionId { get; set; }
-        public DateTime Date{ get; set; }
         public DateTime IniTime { get; set; }
         public DateTime EndTime { get; set; }
         public float TicketPrice { get; set; }

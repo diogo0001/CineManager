@@ -39,15 +39,20 @@ namespace CineManager.Controllers
         public async Task<IActionResult> Post(Sessions model)
         {
             /*
-                Deve-se permitir somente selecionar salas que estão com horário disponível, ou
-                seja, se uma sala já estiver vinculada a outra sessão que contém o horário dentro
-                do intervalo do horário selecionado para a sessão sendo criada, então esta sala
-                não deve ser exibida. Resumidamente, a mesma sala não pode passar dois ou
-                mais filmes ao mesmo tempo.
-                As opções de salas são mostradas no frontend para a escolha, fazer essa validação no frontend?
+                A mesma sala não pode passar dois ou mais filmes ao mesmo tempo.
+                
+                O ideal seria mostrar um calendário no frontend com os horários ocupados bloqueados.
+                Sem a opção de selecionar. O backend já recebe o dado validado.
+
+                Algoritmo para Verificar se há alguma sessão existente no mesmo horário no backend:            
+                sala da sessão inserida != sala de alguma sessão
+                data da sessão inserida != data de alguma sessão
+                início da sessão inserida >= endTime  da sessão anterior
+                final da sessão inserida <= initTime da próxima sessão                    
+                 
              */
             try
-            {
+            {   
                 _repo.Add(model);
 
                 if (await _repo.SaveChangesAsync())
@@ -74,12 +79,26 @@ namespace CineManager.Controllers
                 if (session == null) return NotFound();
 
                 //Uma sessão só pode ser removida se faltar 10 dias ou mais para que ela ocorra
-                // verificar o datetime.now e subtrair o datetime da data
-                // se for maior que 10 dias pode deletar.
+                DateTime dateNow = DateTime.Now.AddDays(10);
+                DateTime sessionDate = session.IniTime;
 
-                _repo.Delete(session);
+                if (DateTime.Compare(dateNow , sessionDate)<0)
+                {
+                    _repo.Delete(session);
+                    Console.WriteLine("Pode deletar");
+                    if (await _repo.SaveChangesAsync()) return Ok();
+                }
+                else
+                {
+                    Console.WriteLine("Data menor que 10 dias");
+                    return NotFound( new { 
+                        message = "Ação não realizada. Esta sessão é em menos de 10 dias!",
+                        error=true
+                    });
+                }
 
-                if (await _repo.SaveChangesAsync()) return Ok();
+                // Ver pra mandar a resposta/mensagem corretamente para o client no caso de operação não permitida
+
             }
             catch (System.Exception)
             {

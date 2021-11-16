@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CineManager.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20211115194400_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20211116232543_InicialMigration")]
+    partial class InicialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -75,9 +75,6 @@ namespace CineManager.Migrations
 
                     b.Property<string>("Audio")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
