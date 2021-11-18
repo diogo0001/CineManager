@@ -18,7 +18,6 @@ namespace CineManager.Models
         public string Animation { get; set; }
         public string Audio { get; set; }
 
-        //Foreign
         public int MovieId { get; set; }
         public int RoomId { get; set; }
         public Movies Movie { get; set; }
@@ -26,14 +25,3 @@ namespace CineManager.Models
     }
 }
 
-/*
-
-date:'14/11/2021',
-ini_time:'17:00',
-end_time:'18:30',
-ticket_price:'30,00',
-animation:'3D',
-audio:'Legendado',
-movie:'Senhor dos Anéis',
-room:'Sala 03'
- */
