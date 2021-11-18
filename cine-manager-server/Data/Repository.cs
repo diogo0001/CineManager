@@ -132,5 +132,15 @@ namespace CineManager.Data
 
             return await query.FirstOrDefaultAsync();
         }
+
+        // User
+        public async Task<Users[]> GetAllUsersAsync(){
+            IQueryable<Users> query = _context.Users;
+
+            query = query.AsNoTracking().OrderBy(User => User.UserId);
+
+            return await query.ToArrayAsync();
+        }
+
     }
 }
