@@ -2,68 +2,110 @@
   <div class="app">
     <side-bar />
     <v-container id="app">
-      <crud-table
-        :headers_p="headers"
-        :items_p="items"
-        :fields_p="fields"
-        @post="post"
-        @update="update"
-        @delete="remove"
-      />
+      <v-app id="app">
+        <span class="title">{{ title }}</span>
+        <v-data-table
+          dense
+          :headers="headers"
+          :items="items"
+          :search="search"
+          class="elevation-2"
+          @click:row="handleClick"
+        >
+          <template v-slot:top>            
+            <v-toolbar flat>
+              <v-text-field
+                dense
+                outlined
+                v-model="search"
+                label="Buscar"
+                append-icon="mdi-manage_search"
+                single-line
+                hide-details
+                class="mr-4 search"
+              ></v-text-field>
+            </v-toolbar>            
+          </template>
+          <template v-slot:no-data>
+            <v-progress-circular
+              indeterminate
+              color="primary"
+              v-if="isLoading"
+              class="loading"
+            ></v-progress-circular>
+            <v-btn v-else class="my-2" color="error" @click="loadData"> Recarregar </v-btn>
+          </template>
+        </v-data-table>
+        <template>
+          <v-row justify="center">
+            <v-dialog
+              v-model="dialog"
+              fullscreen
+              hide-overlay
+              transition="dialog-bottom-transition"
+            >
+              <v-card class="room">
+                <v-toolbar dark color="rgb(19, 95, 124)">
+                  <v-btn icon dark @click="dialog = false">
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
+                  <v-toolbar-title>{{ selectedRow }}</v-toolbar-title>
+                </v-toolbar>                
+                  <img src="../assets/seats.png" alt="sala">                
+              </v-card>
+            </v-dialog>
+          </v-row>
+        </template>
+      </v-app>
     </v-container>
   </div>
 </template>
 
 <script>
-import { RoomsApi } from "../helpers/api";
-import CrudTable from "./CrudTable.vue";
+import { getRooms } from "../helpers/api";
 import SideBar from "./SideBar.vue";
-
-const itemInitial = {
-  name: null,
-  seats_number: null,
-};
-
-const itemLabels = {
-  name: "Sala 01",
-  seats_number: 100,
-};
 
 export default {
   name: "Rooms",
   components: {
-    CrudTable,
     SideBar,
   },
   props: {},
   data: () => ({
     headers: [],
     items: [],
-    fields: {
-      title: "Salas",
-      titleAddItem: "Adicionar Sala",
-      titleEditItem: "Editar Sala",
-      editLabels: itemLabels,
-      editedItem: itemInitial,
-      defaultItem: itemInitial,
-      crud: false,
-    },
-    headers_p: { default: [] },
-    items_p: { default: [] },
+    title: "Salas",
+    search: "",
+    dialog: false,
+    selectedRow:'',
+    isLoading:false
   }),
-  computed: {},
-  watch: {},
+
   created() {
     this.loadData();
-    console.log("Rooms >>> created() ");
   },
-  beforeUpdate() {
-    console.log("Rooms >>> beforeUpdate()");
-  },
-
+  beforeUpdate() {},
   methods: {
     loadData() {
-      this.items = RoomsApi.getRooms();
+      let items = [];
+      this.isLoading = true;
+      getRooms()
+        .then((res) => {
+          const data = res.data;
+          data.map((item) => {
+            let obj = {
+              name: item.name,
+              seatsNumber: item.seatsNumber,
+            };
+            items.push(obj);
+          });
+          this.items = items;
+          this.isLoading = false;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
       this.headers = [
         {
           text: "Sala",
@@ -73,24 +115,35 @@ export default {
         {
           text: "Número de Assentos",
           align: "start",
-          value: "seats_number",
+          value: "seatsNumber",
         },
       ];
     },
-    post(e) {
-      console.log("Rooms >>> POST " + e);
-    },
-    update(e) {
-      console.log("Rooms >>> UPDATE " + e);
-    },
-    remove(e) {
-      console.log("Rooms >>> DELETE " + e);
-    },
-    getItem(e) {
-      console.log("Rooms >>> GET ITEM " + e);
+    handleClick(e) {
+      this.selectedRow = e.name;
+      this.dialog = true;
     },
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.search {
+  max-width: 340px;
+}
+.title {
+  margin-top: -10px;
+  padding: 16px 0 16px 18px;
+  width: 100%;
+}
+
+.room>img{
+  margin:2% 0 0 25%;
+  align-content: center;
+}
+
+/* .v-data-table tr:hover:not(.v-table__expanded__content) {
+  cursor: pointer !important;
+} */
+
+</style>

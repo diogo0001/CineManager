@@ -3,6 +3,7 @@
     <v-app id="app">
       <span class="title">{{ fields_p.title }}</span>
       <v-data-table 
+        dense
         :headers="headers"
         :items="items"
         :search="search"
@@ -21,7 +22,8 @@
                   class="mr-4 search"
                 ></v-text-field>
             <v-spacer></v-spacer>
-              <v-dialog v-model="dialog" max-width="500px" v-if="fields_p.crud">
+            <v-dialog v-model="dialog" max-width="500px" 
+              v-if="fields_p.crud">
               <template v-slot:activator="{ on, attrs }">
                 <v-icon class="mr-2" v-bind="attrs" v-on="on">
                   mdi-plus-circle-outline
@@ -49,7 +51,6 @@
                     </v-row>
                   </v-container>
                 </v-card-text>
-
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn color="blue darken-1" text @click="close">
@@ -58,6 +59,7 @@
                   <v-btn color="blue darken-1" text @click="save"> Salvar </v-btn>
                 </v-card-actions>
               </v-card>
+
             </v-dialog>            
             <v-dialog  v-model="dialogDelete" max-width="510px">
               <v-card>
@@ -138,15 +140,18 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete();
     },
-    items() {},
-    headers() {},
+    items_p() {
+      this.initialize();
+    },
+    // headers() {},
   },
   created() {
     console.log("Table >>> created() ");
-    this.initialize();
+    // this.initialize();
   },
   beforeUpdate() {
     console.log("Table >>> beforeUpdate()");
+    
   },
 
   methods: {
@@ -156,6 +161,7 @@ export default {
         (this.headers = [...this.headers_p]);
       this.items = [...this.items_p];
       this.getLabelsFromHeader();
+      // console.log(JSON.stringify(this.items ))
     },
 
     editItem(item) {

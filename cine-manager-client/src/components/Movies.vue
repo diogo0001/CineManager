@@ -1,62 +1,194 @@
 <template>
   <div class="app">
     <side-bar />
-    <!-- <v-container id="app"> -->
-      <crud-table
-        :headers_p="headers"
-        :items_p="items"
-        :fields_p="fields"
-        @post="post"
-        @update="update"
-        @delete="remove"
-      />
-    <!-- </v-container> -->
+    <v-container id="app">
+      <v-app id="app">
+        <span class="title">{{ title }}</span>
+        <v-data-table
+          dense
+          :headers="headers"
+          :items="items"
+          :search="search"
+          class="elevation-2"
+        >
+          <template v-slot:top>
+            <v-toolbar flat>
+              <v-text-field
+                dense
+                outlined
+                v-model="search"
+                label="Buscar"
+                append-icon="mdi-manage_search"
+                single-line
+                hide-details
+                class="mr-4 search"
+              ></v-text-field>
+              <v-spacer></v-spacer>
+              <v-dialog v-model="dialog" max-width="500px">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon class="mr-2" v-bind="attrs" v-on="on">
+                    mdi-plus-circle-outline
+                  </v-icon>
+                </template>
+                <v-card>
+                  <v-card-title>
+                    <span class="text-h5 ml-12 mt-4">{{ formTitle }}</span>
+                  </v-card-title>
+                  <v-card-text>
+                    <v-container>
+                      <v-row>
+                        <v-col>
+                          <v-text-field
+                            class="mx-8"
+                            type="text"
+                            v-model="editedItem.title"
+                            label="Título"
+                            outlined
+                            dense
+                            required
+                          ></v-text-field>
+                          <v-file-input
+                            class="mr-8"
+                            chips
+                            label="Imagem"
+                            accept="image/png, image/jpeg, image/bmp"
+                            prepend-icon="mdi-camera"
+                            outlined
+                            dense
+                            required
+                            @change="uploadImage($event)"
+                          ></v-file-input>
+                          <v-text-field
+                            class="mx-8"
+                            type="text"
+                            v-model="editedItem.duration"
+                            label="Duração (min)"
+                            outlined
+                            dense
+                            required
+                          ></v-text-field>
+                          <v-textarea
+                            class="mx-8"
+                            type="text"
+                            v-model="editedItem.description"
+                            label="Descrição"
+                            outlined
+                            rows="1"
+                            auto-grow
+                            filled
+                            required
+                          ></v-textarea>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="close">
+                      Cancelar
+                    </v-btn>
+                    <v-btn color="blue darken-1" text @click="save">
+                      Salvar
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+              <v-dialog v-model="dialogDelete" max-width="510px">
+                <v-card>
+                  <v-card-title class="text-h6"
+                    >Tem certeza que deseja excluir este Filme?</v-card-title
+                  >
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="closeDelete"
+                      >Cancelar</v-btn
+                    >
+                    <v-btn color="blue darken-1" text @click="deleteItemConfirm"
+                      >OK</v-btn
+                    >
+                    <v-spacer></v-spacer>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-toolbar>
+          </template>
+          <template v-slot:item.actions="{ item }">
+            <v-icon small class="mr-2" @click="editItem(item)">
+              mdi-pencil
+            </v-icon>
+            <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+          </template>
+          <template v-slot:no-data>
+            <v-progress-circular
+              indeterminate
+              color="primary"
+              v-if="isLoading"
+              class="loading"
+            ></v-progress-circular>
+            <v-btn v-else class="my-2" color="error" @click="loadData">
+              Recarregar
+            </v-btn>
+          </template>
+        </v-data-table>
+      </v-app>
+    </v-container>
   </div>
 </template>
 
 <script>
-import { MoviesApi } from "../helpers/api";
-import CrudTable from "./CrudTable.vue";
+import {
+  getMovies,
+  deleteMovie,
+  updateMovie,
+  createMovie,
+} from "../helpers/api";
 import SideBar from "./SideBar.vue";
 
 const itemInitial = {
+  movieId: null,
   title: null,
-  img_url: null,
+  imgUrl: null,
   description: null,
   duration: null,
-};
-
-const itemLabels = {
-  title: "Título",
-  img_url: "Imagem",
-  description: "Descrição",
-  duration: "Duração (min)",
 };
 
 export default {
   name: "Movies",
   components: {
-    CrudTable,
     SideBar,
   },
   props: {},
   data: () => ({
     headers: [],
     items: [],
-    fields: {
-      title: "Filmes",
-      titleAddItem: "Adicionar Filme",
-      titleEditItem: "Editar Filme",
-      editLabels: itemLabels,
-      editedItem: itemInitial,
-      defaultItem: itemInitial,
-      crud: true,
-    },
-    headers_p: { default: [] },
-    items_p: { default: [] },
+    title: "Filmes",
+    titleAddItem: "Adicionar Filme",
+    titleEditItem: "Editar Filme",
+    editedItem: itemInitial,
+    defaultItem: itemInitial,
+    search: "",
+    dialog: false,
+    dialogDelete: false,
+    editedIndex: -1,
+    isloading: false,
+    image: null,
   }),
-  computed: {},
-  watch: {},
+  computed: {
+    formTitle() {
+      return this.editedIndex === -1 ? this.titleAddItem : this.titleEditItem;
+    },
+  },
+  watch: {
+    dialog(val) {
+      val || this.close();
+    },
+    dialogDelete(val) {
+      val || this.closeDelete();
+    },
+    editedItem(){
+      this.loadData();
+    }
+  },
   created() {
     this.loadData();
     console.log("Movies >>> created() ");
@@ -66,48 +198,166 @@ export default {
   },
 
   methods: {
+    editItem(item) {
+      this.editedIndex = this.items.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      // console.log(`editedItem ${JSON.stringify(this.editedItem) }`)
+      this.dialog = true;
+    },
+
+    deleteItem(item) {
+      this.editedIndex = this.items.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialogDelete = true;
+    },
+
+    deleteItemConfirm() {
+      deleteMovie(this.editedItem.movieId)
+        .then((res) => {
+          console.log(res);
+          this.items.splice(this.editedIndex, 1);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      this.closeDelete();
+    },
+
+    close() {
+      this.dialog = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+
+    closeDelete() {
+      this.dialogDelete = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+
+    save() {
+      // TODO: fazer validações
+      if (this.editedIndex > -1) {
+
+        updateMovie(this.editedItem.movieId, this.editedItem)
+          .then((res) => {
+            console.log(res);
+            Object.assign(this.items[this.editedIndex], this.editedItem);
+            // this.loadData();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        
+      } else {
+        this.editedItem.imgUrl = 'Img'; // Provisório até corigir o upload da imagem
+        const movie = {
+          title: this.editedItem.title,
+          imgUrl: this.editedItem.imgUrl,
+          description: this.editedItem.description,
+          duration: this.editedItem.duration,
+        };      
+             
+        console.log(JSON.stringify(movie))
+
+        createMovie(movie)
+          .then((res) => {
+            console.log(res);
+            this.items.push(this.editedItem);
+            this.editedItem = this.defaultItem;
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+      this.close();
+    },
+
+    // Problemas ao carregar a imagem
+    uploadImage(e) {
+      let data = new FormData();
+      data.append("name", "my-picture");
+      data.append("file", e.target.files[0]);
+      this.image = data;
+      console.log(`Imagem: ${data}`);
+    },
+
     loadData() {
-      this.items = MoviesApi.getMovies();
+      let items = [];
+      this.isLoading = true;
+      getMovies()
+        .then((res) => {
+          const data = res.data;
+          data.map((item) => {
+            let obj = {
+              movieId: item.movieId,
+              title: item.title,
+              imgUrl: item.imgUrl,
+              description: item.description,
+              duration: item.duration,
+            };
+            items.push(obj);
+          });
+          this.items = items;
+          this.isLoading = false;
+          // console.log(JSON.stringify(items));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
       this.headers = [
         {
           text: "Título",
           align: "start",
           value: "title",
+          width: "15%",
         },
         {
           text: "Imagem",
           align: "start",
           sortable: false,
-          value: "img_url",
+          value: "imgUrl",
+          width: "15%",
         },
         {
           text: "Descrição",
           align: "start",
           sortable: false,
           value: "description",
+          width: "40%",
         },
         {
           text: "Duração (min)",
           align: "start",
           value: "duration",
+          width: "15%",
         },
-        { text: "Operações", value: "actions", sortable: false }, // colocar apenas para crud
+        { text: "Operações", value: "actions", sortable: false, width: "15%" }, // colocar apenas para crud
       ];
-    },
-    post(e) {
-      console.log("Movies >>> POST " + e);
-    },
-    update(e) {
-      console.log("Movies >>> UPDATE " + e);
-    },
-    remove(e) {
-      console.log("Movies >>> DELETE " + e);
-    },
-    getItem(e) {
-      console.log("Movies >>> GET ITEM " + e);
     },
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.search {
+  max-width: 340px;
+}
+.title {
+  margin-top: -10px;
+  padding: 16px 0 16px 18px;
+  width: 100%;
+  /* background: rgba(14, 66, 87, 0.959); n1 */
+
+  /* background: rgba(1, 55, 77, 0.959);
+  color: aliceblue; */
+
+  /* border-radius: 6px 6px 0 0 ; */
+  /* box-shadow: rgba(179, 179, 179, 0.74) 0 0 20px 1px; */
+}
+</style>
