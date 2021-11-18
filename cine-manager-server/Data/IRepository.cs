@@ -22,5 +22,8 @@ namespace CineManager.Data
         //Sessions
         Task<Sessions[]> GetAllSessionsAsync(bool includeRoom = true, bool includeMovie = true);
         Task<Sessions> GetSessionAsyncById(int sessionId, bool includeRoom = true, bool includeMovie = true);
+
+        //Users
+        Task<Users[]> GetAllUsersAsync();
     }
 }
