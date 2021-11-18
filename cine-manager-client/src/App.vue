@@ -26,7 +26,7 @@ export default {
   right: 0;
   background-image: url("./assets/movies-bg.jpg");
   background-size: cover;
-  opacity: 0.4;
+  opacity: 0.75;
   z-index: -1;
 }
 

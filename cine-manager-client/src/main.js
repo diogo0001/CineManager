@@ -5,6 +5,18 @@ import router from './router'
 
 Vue.config.productionTip = false
 
+const logged = Vue.observable({ logged: false })
+
+Object.defineProperty(Vue.prototype, '$logged', {
+  get () {
+    return logged.logged
+  },
+  
+  set (value) {
+    logged.logged = value
+  }
+})
+
 new Vue({
   vuetify,
   router,

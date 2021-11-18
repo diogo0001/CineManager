@@ -6,6 +6,7 @@ const URL = {
   ROOMS: "/rooms/",
   MOVIES: "/movies/",
   SESSIONS: "/sessions/",
+  USERS: "/users"
 };
 
 export const axiosInstance = axios.create({
@@ -73,4 +74,11 @@ export const createRoom = (model) => {
 
 export const deleteRoom = (id) => {
   return axiosInstance.delete(`${URL.ROOMS}${id}`, {});
+};
+
+
+// Users
+
+export const login = (model) => {
+  return axiosInstance.post(`${URL.USERS}`, model, {});
 };

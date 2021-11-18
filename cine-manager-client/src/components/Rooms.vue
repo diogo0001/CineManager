@@ -12,7 +12,7 @@
           class="elevation-2"
           @click:row="handleClick"
         >
-          <template v-slot:top>            
+          <template v-slot:top>
             <v-toolbar flat>
               <v-text-field
                 dense
@@ -24,7 +24,7 @@
                 hide-details
                 class="mr-4 search"
               ></v-text-field>
-            </v-toolbar>            
+            </v-toolbar>
           </template>
           <template v-slot:no-data>
             <v-progress-circular
@@ -33,7 +33,9 @@
               v-if="isLoading"
               class="loading"
             ></v-progress-circular>
-            <v-btn v-else class="my-2" color="error" @click="loadData"> Recarregar </v-btn>
+            <v-btn v-else class="my-2" color="error" @click="loadData">
+              Recarregar
+            </v-btn>
           </template>
         </v-data-table>
         <template>
@@ -50,8 +52,8 @@
                     <v-icon>mdi-close</v-icon>
                   </v-btn>
                   <v-toolbar-title>{{ selectedRow }}</v-toolbar-title>
-                </v-toolbar>                
-                  <img src="../assets/seats.png" alt="sala">                
+                </v-toolbar>
+                <img src="../assets/seats.png" alt="sala" />
               </v-card>
             </v-dialog>
           </v-row>
@@ -77,8 +79,8 @@ export default {
     title: "Salas",
     search: "",
     dialog: false,
-    selectedRow:'',
-    isLoading:false
+    selectedRow: "",
+    isLoading: false,
   }),
 
   created() {
@@ -137,13 +139,8 @@ export default {
   width: 100%;
 }
 
-.room>img{
-  margin:2% 0 0 25%;
+.room > img {
+  margin: 2% 0 0 25%;
   align-content: center;
 }
-
-/* .v-data-table tr:hover:not(.v-table__expanded__content) {
-  cursor: pointer !important;
-} */
-
 </style>

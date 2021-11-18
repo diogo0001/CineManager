@@ -196,12 +196,10 @@ export default {
   beforeUpdate() {
     console.log("Movies >>> beforeUpdate()");
   },
-
   methods: {
     editItem(item) {
       this.editedIndex = this.items.indexOf(item);
       this.editedItem = Object.assign({}, item);
-      // console.log(`editedItem ${JSON.stringify(this.editedItem) }`)
       this.dialog = true;
     },
 
@@ -210,7 +208,6 @@ export default {
       this.editedItem = Object.assign({}, item);
       this.dialogDelete = true;
     },
-
     deleteItemConfirm() {
       deleteMovie(this.editedItem.movieId)
         .then((res) => {
@@ -222,7 +219,6 @@ export default {
         });
       this.closeDelete();
     },
-
     close() {
       this.dialog = false;
       this.$nextTick(() => {
@@ -230,7 +226,6 @@ export default {
         this.editedIndex = -1;
       });
     },
-
     closeDelete() {
       this.dialogDelete = false;
       this.$nextTick(() => {
@@ -238,7 +233,6 @@ export default {
         this.editedIndex = -1;
       });
     },
-
     save() {
       // TODO: fazer validações
       if (this.editedIndex > -1) {
@@ -246,7 +240,6 @@ export default {
           .then((res) => {
             console.log(res);
             Object.assign(this.items[this.editedIndex], this.editedItem);
-            // this.loadData();
           })
           .catch((err) => {
             console.log(err);
@@ -283,7 +276,6 @@ export default {
       this.image = data;
       console.log(`Imagem: ${data}`);
     },
-
     loadData() {
       let items = [];
       this.isLoading = true;
@@ -302,7 +294,6 @@ export default {
           });
           this.items = items;
           this.isLoading = false;
-          // console.log(JSON.stringify(items));
         })
         .catch((err) => {
           console.log(err);
@@ -335,7 +326,7 @@ export default {
           value: "duration",
           width: "15%",
         },
-        { text: "Operações", value: "actions", sortable: false, width: "15%" }, // colocar apenas para crud
+        { text: "Operações", value: "actions", sortable: false, width: "15%" }, 
       ];
     },
   },
@@ -350,12 +341,5 @@ export default {
   margin-top: -10px;
   padding: 16px 0 16px 18px;
   width: 100%;
-  /* background: rgba(14, 66, 87, 0.959); n1 */
-
-  /* background: rgba(1, 55, 77, 0.959);
-  color: aliceblue; */
-
-  /* border-radius: 6px 6px 0 0 ; */
-  /* box-shadow: rgba(179, 179, 179, 0.74) 0 0 20px 1px; */
 }
 </style>

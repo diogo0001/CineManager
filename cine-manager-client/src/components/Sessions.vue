@@ -1,5 +1,5 @@
 <template>
-  <div class="app">    
+  <div class="app">
     <side-bar />
     <v-container id="app">
       <v-app id="app">
@@ -150,26 +150,25 @@
           </template>
           <template v-slot:item.actions="{ item }">
             <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
-          </template>       
-          <template v-slot:no-data> 
+          </template>
+          <template v-slot:no-data>
             <v-progress-circular
               indeterminate
               color="primary"
               v-if="isLoading"
               class="loading my-4"
-            ></v-progress-circular>           
+            ></v-progress-circular>
             <v-btn v-else class="my-2" color="error" @click="loadData">
               Recarregar
             </v-btn>
           </template>
         </v-data-table>
       </v-app>
-    </v-container>    
+    </v-container>
   </div>
 </template>
 
 <script>
-
 import {
   getSessions,
   getMovies,
@@ -216,7 +215,7 @@ export default {
     dialogDelete: false,
     editedIndex: -1,
     isLoading: true,
-    relationshipLoaded:false,
+    relationshipLoaded: false,
   }),
   watch: {
     dialog(val) {
@@ -225,18 +224,14 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete();
     },
-    selectedAnimation() {
-      console.log(`selectedAnimation movie - ${this.selectedAnimation} `);
-    },
   },
   created() {
-    this.initialize();
+    this.loadRelationships();
     console.log("Sessions >>> created()");
   },
   beforeUpdate() {
     console.log(`Sessions >>> beforeUpdate()`);
   },
-
   methods: {
     deleteItem(item) {
       this.editedIndex = this.items.indexOf(item);
@@ -245,12 +240,11 @@ export default {
     },
 
     deleteItemConfirm() {
-        console.log("Delete session"+JSON.stringify(this.editedItem));
+      console.log("Delete session" + JSON.stringify(this.editedItem));
 
       deleteSession(this.editedItem.sessionId)
         .then((res) => {
           console.log(res);
-          // this.items.splice(this.editedIndex, 1);
           this.loadData();
         })
         .catch((err) => {
@@ -258,16 +252,13 @@ export default {
         });
       this.closeDelete();
     },
-
     close() {
       this.dialog = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
-      alert("Deletado");
     },
-
     closeDelete() {
       this.dialogDelete = false;
       this.$nextTick(() => {
@@ -275,26 +266,32 @@ export default {
         this.editedIndex = -1;
       });
     },
-
     save() {
       // TODO: fazer validações
-      
-      const iniTime = this.parseSetDateTime(this.editedItem.date, this.editedItem.iniTime);
-      const endTime = this.parseSetDateTime(this.editedItem.date, this.editedItem.iniTime, this.selectedMovie.duration);
+
+      const iniTime = this.parseSetDateTime(
+        this.editedItem.date,
+        this.editedItem.iniTime
+      );
+      const endTime = this.parseSetDateTime(
+        this.editedItem.date,
+        this.editedItem.iniTime,
+        this.selectedMovie.duration
+      );
 
       const session = {
-          iniTime: iniTime, 
-          endTime: endTime, 
-          ticketPrice: this.editedItem.ticketPrice,
-          animation: this.editedItem.animation,
-          audio: this.editedItem.audio,
-          movieId: this.selectedMovie.id,
-          roomId: this.selectedRoom.id,
-        };
+        iniTime: iniTime,
+        endTime: endTime,
+        ticketPrice: this.editedItem.ticketPrice,
+        animation: this.editedItem.animation,
+        audio: this.editedItem.audio,
+        movieId: this.selectedMovie.id,
+        roomId: this.selectedRoom.id,
+      };
 
-        console.log("Create session "+JSON.stringify(session));
+      console.log("Create session " + JSON.stringify(session));
 
-      if(iniTime != "-" && (endTime != "-" || endTime != 'Invalid Date')){      
+      if (iniTime != "-" && (endTime != "-" || endTime != "Invalid Date")) {
         createSession(session)
           .then((res) => {
             console.log(res);
@@ -304,28 +301,22 @@ export default {
           .catch((err) => {
             console.log(err);
           });
-      }
-      else{
+      } else {
         console.log("Data ou horário inválidos");
       }
-
       this.close();
     },
-    initialize(){
-      this.loadRelationships();      
-    },
-
     loadData() {
       this.isLoading = true;
       let items = [];
 
-      if(this.relationshipLoaded){
+      if (this.relationshipLoaded) {
         getSessions()
           .then((res) => {
             const data = res.data;
             data.map((item) => {
               let obj = {
-                sessionId:item.sessionId,
+                sessionId: item.sessionId,
                 movie: this.getRelationshipItem(item.movieId, this.movies),
                 room: this.getRelationshipItem(item.roomId, this.rooms),
                 date: this.parseGetDateTime(item.iniTime, false),
@@ -344,7 +335,7 @@ export default {
           })
           .finally(() => {
             this.isLoading = false;
-          })
+          });
       }
 
       this.headers = [
@@ -430,7 +421,7 @@ export default {
             let obj = {
               name: item.title,
               id: item.movieId,
-              duration:item.duration
+              duration: item.duration,
             };
             movies.push(obj);
           });
@@ -439,27 +430,27 @@ export default {
         .catch((err) => {
           console.log(err);
         })
-        .finally(() =>{
+        .finally(() => {
           getRooms()
-          .then((res) => {
-            const data = res.data;
-            data.map((item) => {
-              let obj = {
-                name: item.name,
-                id: item.roomId,
-              };
-              rooms.push(obj);
+            .then((res) => {
+              const data = res.data;
+              data.map((item) => {
+                let obj = {
+                  name: item.name,
+                  id: item.roomId,
+                };
+                rooms.push(obj);
+              });
+              this.rooms = rooms;
+            })
+            .catch((err) => {
+              console.log(err);
             });
-            this.rooms = rooms;
-          })
-          .catch((err) => {
-            console.log(err);
-          });
         })
         .finally(() => {
           this.relationshipLoaded = true;
           this.loadData();
-        });   
+        });
     },
 
     parseGetDateTime(datetimeString, time = true) {
@@ -472,57 +463,37 @@ export default {
 
     parseSetDateTime(date, time, duration = 0) {
       // TODO: usar regex e fazer validação dos campos
-      try{
-        let dateSplited = date.split('/');
-        let dateparsed = `${dateSplited[2]}-${dateSplited[1]}-${dateSplited[0]}T`
-        let timeParsed = `${time}:00`
-        let dtParsed = dateparsed + timeParsed
+      try {
+        let dateSplited = date.split("/");
+        let dateparsed = `${dateSplited[2]}-${dateSplited[1]}-${dateSplited[0]}T`;
+        let timeParsed = `${time}:00`;
+        let dtParsed = dateparsed + timeParsed;
 
-        console.log(dtParsed)
+        console.log(dtParsed);
 
-        if(duration == 0) return dtParsed;
+        if (duration == 0) return dtParsed;
 
         let dt = new Date(dtParsed);
-        const totalTime = dt.getTime() + parseInt(duration,10)*60*1000;
-        dt.setTime(totalTime)
+        const totalTime = dt.getTime() + parseInt(duration, 10) * 60 * 1000;
+        dt.setTime(totalTime);
         const hours = dt.getHours();
         const min = dt.getMinutes();
 
-        timeParsed = `${hours}:${min}:00`
-        dtParsed = dateparsed + timeParsed
+        timeParsed = `${hours}:${min}:00`;
+        dtParsed = dateparsed + timeParsed;
 
-        console.log("Termino: "+dtParsed)
+        console.log("Termino: " + dtParsed);
         return dtParsed;
-      }
-      catch(err){
+      } catch (err) {
         console.log(err);
       }
       return "-";
     },
   },
 };
-
-/*
-
-
-Finalizar:
-
-- Fazer o login e logout
-- Notificações
-- Arrumar os estilos
-
-- Organizar, limpar e comentar os códigos
-- Fazer o readme
-    explicar como levantar o ambiente
-    explicar como funciona e colocar imagens (tentar gifs)
-    explicar o que falta implementar dos requisitos e coisas que um sistema precisa que tenha
-
-*/
-
 </script>
 
 <style scoped>
-
 .search {
   max-width: 340px;
 }
@@ -532,5 +503,4 @@ Finalizar:
   padding: 16px 0 16px 18px;
   width: 100%;
 }
-
 </style>

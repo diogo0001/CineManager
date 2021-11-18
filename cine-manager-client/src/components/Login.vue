@@ -3,8 +3,9 @@
     <div class="bg"></div>
     <v-card class="mx-auto login" :elevation="2">
       <v-card-text>
-        <v-text-field label="Email" type="email" v-model="userName" />
+        <v-text-field label="Email" type="email" v-model="userEmail" required />
         <v-text-field
+          required
           v-model.trim="password"
           label="Senha"
           :type="showPassord ? 'text' : 'password'"
@@ -21,13 +22,14 @@
 
 <script>
 import { required } from "vuelidate/lib/validators";
+import { login } from "../services/api";
 
 export default {
   name: "login",
-  props: ["isLogged"],
+  props: ["logged"],
   data() {
     return {
-      userName: "",
+      userEmail: "",
       password: "",
       showPassord: false,
     };
@@ -38,8 +40,24 @@ export default {
   },
   methods: {
     login() {
-      // console.log("Logging..." + this.isLogged);
-      // this.isLogged = true;
+      // Fazer validação e tudo mais pra um login correto!!
+      const user = {
+        userEmail: this.userEmail,
+        password: this.password,
+      };
+      console.log(this.$logged)
+
+      login(user)
+        .then((res) => {
+          console.log(res.data);
+          this.isLogged = true;
+          this.$logged = true;  
+          this.$router.push({name:'sessions'})
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$logged = false;
+        });
     },
   },
 };
@@ -50,7 +68,6 @@ export default {
   height: 100%;
   width: 100%;
   z-index: 5;
-  /* background: rgb(101, 195, 224); */
 }
 
 .login {
