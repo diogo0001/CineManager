@@ -22,13 +22,11 @@ namespace CineManager.Controllers
 
         private async Task<bool> CheckIfExists(Movies movie)
         {
-            var movies = await _repo.GetAllMoviesAsync();
-            
+            var movies = await _repo.GetAllMoviesAsync();            
             foreach(var m in movies)
             {
                 if (m.Title == movie.Title) return true;
             }
-
             return false;
         }
 
@@ -39,7 +37,6 @@ namespace CineManager.Controllers
             try
             {
                 var result = await _repo.GetAllMoviesAsync();
-                Console.WriteLine($"Movies Get() {result.Count()} items");
                 return Ok(result);
             }
             catch (System.Exception)
@@ -90,14 +87,12 @@ namespace CineManager.Controllers
                         return Created($"/api/movies/{model.MovieId}", model);
                     }
                 }
-                //return this.StatusCode(StatusCodes.Status100Continue,"Registo já existente.");
+                return this.StatusCode(StatusCodes.Status401Unauthorized, "Filme já cadastrado.");
             }
             catch (System.Exception)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no Banco de Dados.");
             }
-
-            return BadRequest();
         }
 
         [HttpPut("{movie_id}")]
@@ -107,26 +102,20 @@ namespace CineManager.Controllers
             {
                 var movie = await _repo.GetMovieAsyncById(movie_id);
 
-                if (movie == null) return NotFound("Não encontrado");
+                if (movie == null) return NotFound();
 
-                if (movie.Title != model.Title)
+                _repo.Update(model);
+
+                if (await _repo.SaveChangesAsync())
                 {
-                    _repo.Update(model);
-
-                    if (await _repo.SaveChangesAsync())
-                    {
-                        // get movie again, once it has changed,
-                        movie = await _repo.GetMovieAsyncById(movie_id);
-                        return Created($"/api/movies/{model.MovieId}", movie);
-                    }
+                    movie = await _repo.GetMovieAsyncById(movie_id);
+                    return Created($"/api/movies/{model.MovieId}", movie);
                 }
-                //return this.StatusCode(StatusCodes.Status100Continue, "Registo já existente.");
             }
             catch (System.Exception)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no Banco de Dados.");
             }
-
             return BadRequest();
         }
 
@@ -139,20 +128,18 @@ namespace CineManager.Controllers
 
                 if (movie == null) return NotFound();
 
-                if (movie.Sessions.Count > 0) return StatusCode(200, "Não foi possível excluir, existem sessões vinculadas ao filme.");
+                if (movie.Sessions.Count > 0) 
+                    return this.StatusCode(StatusCodes.Status401Unauthorized, "Não foi possível excluir, existem sessões vinculadas ao filme.");
 
                 _repo.Delete(movie);
 
-                if (await _repo.SaveChangesAsync()) return Ok("Filme deletado");
-
+                if (await _repo.SaveChangesAsync()) return Ok();
             }
             catch (System.Exception)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no Banco de Dados.");
             }
-
             return BadRequest();
         }
-
     }
 }

@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using CineManager.Models;
 
@@ -42,32 +40,43 @@ namespace CineManager.Controllers
                 A mesma sala não pode passar dois ou mais filmes ao mesmo tempo.
                 
                 O ideal seria mostrar um calendário no frontend com os horários ocupados bloqueados.
-                Sem a opção de selecionar. O backend já recebe o dado validado.
-
-                Algoritmo para Verificar se há alguma sessão existente no mesmo horário no backend:            
-                sala da sessão inserida != sala de alguma sessão
-                data da sessão inserida != data de alguma sessão
-                início da sessão inserida >= endTime  da sessão anterior
-                final da sessão inserida <= initTime da próxima sessão                    
-                 
+                O UX do sistema seria melhor                                 
              */
             try
-            {   
+            {
+                var sessions = await _repo.GetAllSessionsAsync();
+                var modelDate = model.IniTime.Date;
+                var modelRoom = model.RoomId;
+                var modelInitTime = model.IniTime.TimeOfDay;
+                var modelEndTime = model.EndTime.TimeOfDay;
+
+                foreach (var session in sessions)
+                {
+                    var sessionDate = session.IniTime.Date;
+                    var sessionRoom = session.RoomId;
+
+                    if (sessionDate == modelDate && sessionRoom == modelRoom)
+                    {
+                        var sessionInitTime = session.IniTime.TimeOfDay;
+                        var sessionEndTime = session.EndTime.TimeOfDay;
+
+                        if (modelInitTime <= sessionEndTime && modelEndTime >= sessionInitTime)
+                            return this.StatusCode(StatusCodes.Status401Unauthorized, "Conflito de horários!");
+                    }
+                }
+
                 _repo.Add(model);
 
                 if (await _repo.SaveChangesAsync())
-                {
                     return Created($"/api/session/{model.SessionId}", model);
-                }
+
             }
             catch (System.Exception)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no Banco de Dados.");
             }
-
             return BadRequest();
         }
-
 
         [HttpDelete("{session_id}")]
         public async Task<IActionResult> Delete(int session_id)
@@ -82,7 +91,7 @@ namespace CineManager.Controllers
                 DateTime dateNow = DateTime.Now.AddDays(10);
                 DateTime sessionDate = session.IniTime;
 
-                if (DateTime.Compare(dateNow , sessionDate)<0)
+                if (DateTime.Compare(dateNow, sessionDate) < 0)
                 {
                     _repo.Delete(session);
                     Console.WriteLine("Pode deletar");
@@ -91,20 +100,13 @@ namespace CineManager.Controllers
                 else
                 {
                     Console.WriteLine("Data menor que 10 dias");
-                    return NotFound( new { 
-                        message = "Ação não realizada. Esta sessão é em menos de 10 dias!",
-                        error=true
-                    });
+                    return this.StatusCode(StatusCodes.Status401Unauthorized, "Esta sessão é em menos de 10 dias!");
                 }
-
-                // Ver pra mandar a resposta/mensagem corretamente para o client no caso de operação não permitida
-
             }
             catch (System.Exception)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no Banco de Dados.");
             }
-
             return BadRequest();
         }
     }

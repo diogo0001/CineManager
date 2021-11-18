@@ -15,12 +15,7 @@ namespace CineManager.Models
         public string Name { get; set; }
         public int SeatsNumber { get; set; }
 
-        // Relationship
         public List<Sessions> Sessions { get; set; }
     }
 }
 
-/*
- *  name:'Sala 01',
-    seats_number:100,
- */
