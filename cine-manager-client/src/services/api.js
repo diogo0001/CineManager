@@ -1,4 +1,4 @@
-import { APP_URL } from "../globals";
+import { API_URL } from "../globals";
 import axios from "axios";
 
 const URL = {
@@ -9,7 +9,7 @@ const URL = {
 };
 
 export const axiosInstance = axios.create({
-  baseURL: APP_URL,
+  baseURL: API_URL,
 });
 
 // Movies

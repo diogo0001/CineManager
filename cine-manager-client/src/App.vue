@@ -1,5 +1,6 @@
 <template>
   <v-app class="app">
+    <div class="bg"></div>
     <nav-bar />
     <router-view />
   </v-app>
@@ -13,32 +14,24 @@ export default {
   components: {
     NavBar,
   },
-
-  data: () => ({
-    //
-  }),
 };
 </script>
 
 <style lang="css">
-body {
-  /* margin-top: 64px; */
+.bg {
+  position: absolute;
+  top: 64px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-image: url("./assets/movies-bg.jpg");
+  background-size: cover;
+  opacity: 0.4;
+  z-index: -1;
 }
-/* fazer margin-top=52 se a tela for menor que 945 */ 
 
 .app {
   display: flex;
   justify-content: space-between;
-  /* background: rgb(196, 196, 196); */
 }
-
-#app {
-  /* background: rgb(196, 196, 196); */
-}
-
-a{
-  text-decoration: none;
-  color: white;
-}
-
 </style>

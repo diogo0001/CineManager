@@ -141,7 +141,7 @@ import {
   deleteMovie,
   updateMovie,
   createMovie,
-} from "../helpers/api";
+} from "../services/api";
 import SideBar from "./SideBar.vue";
 
 const itemInitial = {
@@ -185,9 +185,9 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete();
     },
-    editedItem(){
+    editedItem() {
       this.loadData();
-    }
+    },
   },
   created() {
     this.loadData();
@@ -242,7 +242,6 @@ export default {
     save() {
       // TODO: fazer validações
       if (this.editedIndex > -1) {
-
         updateMovie(this.editedItem.movieId, this.editedItem)
           .then((res) => {
             console.log(res);
@@ -252,17 +251,16 @@ export default {
           .catch((err) => {
             console.log(err);
           });
-        
       } else {
-        this.editedItem.imgUrl = 'Img'; // Provisório até corigir o upload da imagem
+        this.editedItem.imgUrl = "Img"; // Provisório até corigir o upload da imagem
         const movie = {
           title: this.editedItem.title,
           imgUrl: this.editedItem.imgUrl,
           description: this.editedItem.description,
           duration: this.editedItem.duration,
-        };      
-             
-        console.log(JSON.stringify(movie))
+        };
+
+        console.log(JSON.stringify(movie));
 
         createMovie(movie)
           .then((res) => {

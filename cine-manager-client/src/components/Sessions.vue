@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div class="app">    
     <side-bar />
     <v-container id="app">
       <v-app id="app">
@@ -150,7 +150,7 @@
           </template>
           <template v-slot:item.actions="{ item }">
             <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
-          </template>          
+          </template>       
           <template v-slot:no-data> 
             <v-progress-circular
               indeterminate
@@ -164,18 +164,20 @@
           </template>
         </v-data-table>
       </v-app>
-    </v-container>
+    </v-container>    
   </div>
 </template>
 
 <script>
+
 import {
   getSessions,
   getMovies,
   getRooms,
   createSession,
   deleteSession,
-} from "../helpers/api";
+} from "../services/api";
+
 import SideBar from "./SideBar.vue";
 
 const itemInitial = {
@@ -209,10 +211,6 @@ export default {
     defaultItem: itemInitial,
     selectedMovie: { name: "", id: "" },
     selectedRoom: { name: "", id: "" },
-    // selectedAnimation: "",
-    // selectedAudio: "",
-    // selectedDate: "",
-    // ticket: "",
     search: "",
     dialog: false,
     dialogDelete: false,
@@ -267,6 +265,7 @@ export default {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
+      alert("Deletado");
     },
 
     closeDelete() {
@@ -301,7 +300,6 @@ export default {
             console.log(res);
             this.items.push(this.editedItem);
             this.editedItem = this.defaultItem;
-            // notify -> Cadastro realizado com sucesso!
           })
           .catch((err) => {
             console.log(err);
@@ -309,7 +307,6 @@ export default {
       }
       else{
         console.log("Data ou horário inválidos");
-        // notifyv -> Data ou horário inválidos
       }
 
       this.close();
@@ -341,7 +338,6 @@ export default {
               items.push(obj);
             });
             this.items = items;
-            // console.log(JSON.stringify(items));
           })
           .catch((err) => {
             console.log(err);
@@ -427,7 +423,6 @@ export default {
       this.relationshipLoaded = false;
       this.isLoading = true;
 
-      // colocar para await 
       getMovies()
         .then((res) => {
           const data = res.data;
@@ -440,7 +435,6 @@ export default {
             movies.push(obj);
           });
           this.movies = movies;
-          // console.log(JSON.stringify(movies));
         })
         .catch((err) => {
           console.log(err);
@@ -457,7 +451,6 @@ export default {
               rooms.push(obj);
             });
             this.rooms = rooms;
-            // console.log(JSON.stringify(rooms));
           })
           .catch((err) => {
             console.log(err);
@@ -511,19 +504,13 @@ export default {
 
 /*
 
-20/11/2021
-13:00
 
 Finalizar:
-
-- Fazer o parser da data e adicionar o tempo final a partir do tempo do filme - OK
-- Fazer o algoritmo pra bloquear no backend se horário estiver ocupado
-
- Até aqui, tabelas ok
 
 - Fazer o login e logout
 - Notificações
 - Arrumar os estilos
+
 - Organizar, limpar e comentar os códigos
 - Fazer o readme
     explicar como levantar o ambiente
@@ -539,16 +526,11 @@ Finalizar:
 .search {
   max-width: 340px;
 }
+
 .title {
   margin-top: -10px;
   padding: 16px 0 16px 18px;
   width: 100%;
-  /* background: rgba(14, 66, 87, 0.959); n1 */
-
-  /* background: rgba(1, 55, 77, 0.959);
-  color: aliceblue; */
-
-  /* border-radius: 6px 6px 0 0 ; */
-  /* box-shadow: rgba(179, 179, 179, 0.74) 0 0 20px 1px; */
 }
+
 </style>

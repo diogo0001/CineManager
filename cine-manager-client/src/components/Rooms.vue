@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { getRooms } from "../helpers/api";
+import { getRooms } from "../services/api";
 import SideBar from "./SideBar.vue";
 
 export default {

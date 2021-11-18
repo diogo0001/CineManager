@@ -1,9 +1,11 @@
 <template>
   <div class="container">
-    <v-card  class="mx-auto login" :elevation="2">
+    <div class="bg"></div>
+    <v-card class="mx-auto login" :elevation="2">
       <v-card-text>
-        <v-text-field label="Email" type="email" />
+        <v-text-field label="Email" type="email" v-model="userName" />
         <v-text-field
+          v-model.trim="password"
           label="Senha"
           :type="showPassord ? 'text' : 'password'"
           @click:append="showPassord = !showPassord"
@@ -18,13 +20,21 @@
 </template>
 
 <script>
+import { required } from "vuelidate/lib/validators";
+
 export default {
   name: "login",
   props: ["isLogged"],
   data() {
     return {
+      userName: "",
+      password: "",
       showPassord: false,
     };
+  },
+  validations: {
+    username: { required },
+    password: { required },
   },
   methods: {
     login() {
@@ -37,8 +47,9 @@ export default {
 
 <style scoped>
 .container {
-  height: 500px;
+  height: 100%;
   width: 100%;
+  z-index: 5;
   /* background: rgb(101, 195, 224); */
 }
 

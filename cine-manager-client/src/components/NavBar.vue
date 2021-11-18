@@ -1,34 +1,30 @@
 <template>
-  <!-- <div class="dam"> -->
-    <v-toolbar dark color="rgb(19, 95, 124)">
+  <nav>
+    <v-toolbar dark color="rgb(6, 63, 85)">
       <img
         alt="popcorn"
-        width="38"
+        width="34"
         src="../assets/popcorn-white.png"
         style="margin-right: 20px"
       />
       <v-toolbar-title>CineManager</v-toolbar-title>
       <v-spacer></v-spacer>
       <div>
-        <v-btn text rounded>Sair</v-btn>
+        <v-btn v-if="isLogged" text rounded>Sair</v-btn>
       </div>
-    </v-toolbar> 
-  <!-- </div> -->
+    </v-toolbar>
+  </nav>
 </template>
 
 <script>
-
 export default {
   name: "NavBar",
-  components: {},
   data() {
     return {
-  
+      isLogged: false,
     };
   },
 };
 </script>
 
-<style lang="css" scoped>
-
-</style>
+<style lang="css" scoped></style>

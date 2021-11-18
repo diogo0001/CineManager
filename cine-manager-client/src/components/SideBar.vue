@@ -1,6 +1,11 @@
 <template>
-  <v-app >
-    <v-navigation-drawer dark v-model="drawer" :mini-variant.sync="mini" permanent>
+  <v-app>
+    <v-navigation-drawer
+      dark
+      v-model="drawer"
+      :mini-variant.sync="mini"
+      permanent
+    >
       <v-list-item class="px-2">
         <v-list-item-avatar>
           <v-icon large>mdi-account-circle</v-icon>
@@ -11,13 +16,15 @@
         </v-btn>
       </v-list-item>
       <v-divider></v-divider>
-      <v-list dense>
+      <v-list dense class="nav">
         <v-list-item v-for="item in items" :key="item.title" link>
           <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
+            <router-link :to="{ name: item.path }">
+              <v-icon>{{ item.icon }}</v-icon>
+            </router-link>
           </v-list-item-icon>
           <v-list-item-content>
-            <router-link :to="{ name: item.path }">
+            <router-link dark :to="{ name: item.path }">
               <v-list-item-title>
                 {{ item.title }}
               </v-list-item-title>
@@ -48,9 +55,17 @@ export default {
 </script>
 
 <style lang="css" scoped>
-
-
 .v-navigation-drawer {
-  background: rgb(14, 66, 87);
+  background: rgb(6, 63, 85);
+}
+
+.router-link,
+.router-link-active {
+  color: rgb(240, 238, 238) !important;
+  color: inherit;
+}
+
+a {
+  text-decoration: none;
 }
 </style>
