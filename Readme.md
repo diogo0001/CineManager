@@ -7,6 +7,11 @@ Sistema onde o usuário faz o login como admin e pode:
 - Visualizar as salas
 
 #### Login
+
+Para o login as credenciais são:
+- Email: contato@cinemanager.com
+- Password: cinemanager
+
 <img src="https://github.com/diogo0001/CineManager/blob/master/Media/login.gif" width="700" height="400"> 
 
 #### Salas
