@@ -22,7 +22,7 @@ Sistema onde o usuário faz o login como admin e pode:
 ## Requisitos
 
 - Um novo filme só poderá ser cadastrado se ainda não tiver nenhum registro (não duplicar)
-- Ao remover um filme, só será permitido se não houver sessões vinvuladas.
+- Ao remover um filme, só será permitido se não houver sessões vinculadas.
 - Ao cadastrar uma sessão, não podem haver conflitos de horários nas salas.
 - Uma sessão só poderá ser removida se faltar mais de 10 dias.
 
@@ -63,14 +63,14 @@ As dependências para o backend são:
 Antes de subir a aplicação, é preciso criar o banco de dados. Faça isso executando o comando a seguir na pasta 'cine-manager-server':
 
 ```bash
-dotner ef database update
+dotnet ef database update
 ```
 
 Abra o Sql Server Managment Studio e verifique se o banco 'cinemaganer_local_db' foi criado. Execute os scripts da pasta 'DbScripts' para carregar os dados iniciais. Estes dados são pra facilitar a visualização, sem necessariamente atenterem os requisitos do sistema. Mas alguns dados são importantes, como as salas e os dados de usuário admim.<br>
 Após o banco estar OK, é só subir o servidor:
 
 ```bash
-dotner run
+dotnet run
 ```
 
 ## Itens ainda não implementados ou com problemas
