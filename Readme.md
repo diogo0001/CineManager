@@ -6,6 +6,19 @@ Sistema onde o usuário faz o login como admin e pode:
 - Cadastrar e remover sessões
 - Visualizar as salas
 
+#### Login
+<img src="https://github.com/diogo0001/CineManager/blob/master/Media/login.gif" width="700" height="400"> 
+
+#### Salas
+<img src="https://github.com/diogo0001/CineManager/blob/master/Media/rooms.gif" width="700" height="400"> 
+
+#### Filmes
+<img src="https://github.com/diogo0001/CineManager/blob/master/Media/movies.gif" width="700" height="400"> 
+
+#### Sessões
+<img src="https://github.com/diogo0001/CineManager/blob/master/Media/sessions.gif" width="700" height="400"> 
+
+
 ## Requisitos
 
 - Um novo filme só poderá ser cadastrado se ainda não tiver nenhum registro (não duplicar)
