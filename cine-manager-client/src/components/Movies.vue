@@ -213,9 +213,17 @@ export default {
         .then((res) => {
           console.log(res);
           this.items.splice(this.editedIndex, 1);
+          this.$notify({
+            text: "Filme excluído com sucesso!",
+            type: "success",
+          });
         })
         .catch((err) => {
           console.log(err);
+          this.$notify({
+            text: "Falha ao deletar o filme! " + err.response.data,
+            type: "error",
+          });
         });
       this.closeDelete();
     },
@@ -239,10 +247,18 @@ export default {
         updateMovie(this.editedItem.movieId, this.editedItem)
           .then((res) => {
             console.log(res);
-            Object.assign(this.items[this.editedIndex], this.editedItem);
+            this.items[this.editedIndex] = { ...this.editedItem };
+            this.$notify({
+              text: "Filme salvo com sucesso!",
+              type: "success",
+            });
           })
           .catch((err) => {
             console.log(err);
+            this.$notify({
+              text: "Falha ao salvar o filme! " + err.response.data,
+              type: "error",
+            });
           });
       } else {
         this.editedItem.imgUrl = "Img"; // Provisório até corigir o upload da imagem
@@ -252,17 +268,23 @@ export default {
           description: this.editedItem.description,
           duration: this.editedItem.duration,
         };
-
         console.log(JSON.stringify(movie));
-
         createMovie(movie)
           .then((res) => {
             console.log(res);
             this.items.push(this.editedItem);
             this.editedItem = this.defaultItem;
+            this.$notify({
+              text: "Filme salvo com sucesso!",
+              type: "success",
+            });
           })
           .catch((err) => {
             console.log(err);
+            this.$notify({
+              text: "Falha ao salvar o filme! " + err.response.data,
+              type: "error",
+            });
           });
       }
       this.close();
@@ -297,6 +319,10 @@ export default {
         })
         .catch((err) => {
           console.log(err);
+          this.$notify({
+            text: "Falha ao carregar a lista de filmes! " + err.response.data,
+            type: "error",
+          });
         });
 
       this.headers = [
@@ -326,7 +352,7 @@ export default {
           value: "duration",
           width: "15%",
         },
-        { text: "Operações", value: "actions", sortable: false, width: "15%" }, 
+        { text: "Operações", value: "actions", sortable: false, width: "15%" },
       ];
     },
   },

@@ -106,6 +106,10 @@ export default {
         })
         .catch((err) => {
           console.log(err);
+          this.$notify({
+              text: 'Falha ao carregar a lista de salas! '+err,
+              type:'error'
+            });
         });
 
       this.headers = [

@@ -245,10 +245,18 @@ export default {
       deleteSession(this.editedItem.sessionId)
         .then((res) => {
           console.log(res);
+          this.$notify({
+              text: 'Sessão deletada com sucesso!',
+              type:'success'
+            });
           this.loadData();
         })
         .catch((err) => {
           console.log(err);
+          this.$notify({
+              text: "Falha ao deletar sessão! "+ err.response.data,
+              type:'error'
+            });
         });
       this.closeDelete();
     },
@@ -297,12 +305,24 @@ export default {
             console.log(res);
             this.items.push(this.editedItem);
             this.editedItem = this.defaultItem;
+            this.$notify({
+              text: 'Sessão salva com sucesso! ',
+              type:'success'
+            });
           })
           .catch((err) => {
             console.log(err);
+            this.$notify({
+              text: 'Falha ao salvar sessão! '+err.response.data,
+              type:'error'
+            });
           });
       } else {
         console.log("Data ou horário inválidos");
+         this.$notify({
+              text: 'Data ou horário inválidos ',
+              type:'error'
+            });
       }
       this.close();
     },
@@ -332,6 +352,10 @@ export default {
           })
           .catch((err) => {
             console.log(err);
+            this.$notify({
+              text: 'Falha ao carregar sessões!\n '+err.response.data,
+              type:'error'
+            });
           })
           .finally(() => {
             this.isLoading = false;

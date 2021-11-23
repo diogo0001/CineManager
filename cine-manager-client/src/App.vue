@@ -3,6 +3,7 @@
     <div class="bg"></div>
     <nav-bar />
     <router-view />
+    <notifications class="notify" position="bottom left" />
   </v-app>
 </template>
 
@@ -33,5 +34,8 @@ export default {
 .app {
   display: flex;
   justify-content: space-between;
+}
+.notify{
+  margin: 0 0 20px 60px
 }
 </style>
