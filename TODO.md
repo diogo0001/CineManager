@@ -4,19 +4,21 @@
 
 - [DONE] Toasts com mensagens dos status das ações
 
+- Bugs
+    - [DONE]  Criar sessão mantem os dados no form
+    - [DONE]  Salva data 1 mês atrasado
+    - [DONE] Não escreve todos os dados no front quando cria sessão
+    - [DONE] Verifica data como menor que 10 dias para sessões que já ocorreram ( estão no passado) - backend
+
+
 - Correto sistema de autenticação e autorização do login.
+
 - Validações dos inputs
     - Colocar date e time pickers
     - Formatar preço
     - Verificar todos os campos
 - Carregamento das imagens dos filmes
 - Melhorar estilos
-
-- Bugs
-    - [DONE]  Criar sessão mantem os dados no form
-    - [DONE]  Salva data 1 mês atrasado
-    - [DONE] Não escreve todos os dados no front quando cria sessão
-    - Verifica data como menor que 10 dias para sessões que já ocorreram ( estão no passado) - backend
 
 - Testes
 - Deploy

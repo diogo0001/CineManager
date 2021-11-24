@@ -84,7 +84,33 @@
                           </v-select>
                         </v-col>
                         <v-col cols="6">
-                          <v-text-field
+                          <v-menu
+                            ref="menu1"
+                            v-model="menu1"
+                            :close-on-content-click="false"
+                            transition="scale-transition"
+                            offset-y
+                            max-width="290px"
+                            min-width="auto"
+                          >
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-text-field
+                                v-model="dateFormatted"
+                                label="Data"
+                                placeholder="MM/DD/AAAA"
+                                v-bind="attrs"
+                                v-on="on"
+                                outlined
+                                dense
+                              ></v-text-field>
+                            </template>
+                            <v-date-picker
+                              v-model="date"
+                              no-title
+                              @input="menu1 = false"
+                            ></v-date-picker>
+                          </v-menu>
+                          <!-- <v-text-field
                             type="text"
                             v-model="date"
                             label="Data"
@@ -92,7 +118,7 @@
                             outlined
                             dense
                             required
-                          ></v-text-field>
+                          ></v-text-field> -->
                         </v-col>
                         <v-col cols="6">
                           <v-text-field
@@ -194,8 +220,11 @@ export default {
     audios: ["Dublado", "Legendado"],
     title: "Sessões",
     titleAddItem: "Adicionar Sessão",
-    sessionId:'',
-    date: "",
+    sessionId: "",
+    date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+      .toISOString()
+      .substr(0, 10),
+    dateFormatted: "",
     iniTime: "",
     ticketPrice: "",
     animation: "",
@@ -203,6 +232,7 @@ export default {
     selectedMovie: { name: "", id: "" },
     selectedRoom: { name: "", id: "" },
     search: "",
+    menu1: false,
     dialog: false,
     dialogDelete: false,
     isLoading: true,
@@ -215,10 +245,18 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete();
     },
+    date() {
+      this.dateFormatted = this.formatMenuDate(this.date);
+    },
   },
   created() {
     this.loadRelationships();
-    console.log("Sessions >>> created()");
+    (this.dateFormatted = this.formatMenuDate(
+      new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10)
+    )),
+      console.log("Sessions >>> created()");
   },
   beforeUpdate() {
     console.log(`Sessions >>> beforeUpdate()`);
@@ -252,6 +290,7 @@ export default {
     },
     close() {
       this.dialog = false;
+      this.resetData();
     },
     closeDelete() {
       this.dialogDelete = false;
@@ -323,8 +362,15 @@ export default {
       return obj;
     },
     resetData() {
-      this.date = "";
-      this.iniTime = "";
+      this.date = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10);
+      (this.dateFormatted = this.formatMenuDate(
+        new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+          .toISOString()
+          .substr(0, 10)
+      )),
+        (this.iniTime = "");
       this.ticketPrice = "";
       this.animation = "";
       this.audio = "";
@@ -483,9 +529,9 @@ export default {
     parseSetDateTime(date, time, duration = 0) {
       // TODO: usar regex e fazer validação dos campos
       try {
-        let dateSplited = date.split("/");
-        let dateparsed = `${dateSplited[2]}-${dateSplited[1]}-${dateSplited[0]}T`;
-        let timeParsed = `${time}:00`;
+        // let dateSplited = date.split("/");
+        let dateparsed = date;  // `${dateSplited[2]}-${dateSplited[1]}-${dateSplited[0]}T`;
+        let timeParsed = `T${time}:00`;
         let dtParsed = dateparsed + timeParsed;
 
         console.log(dtParsed);
@@ -498,7 +544,7 @@ export default {
         const hours = dt.getHours();
         const min = dt.getMinutes();
 
-        timeParsed = `${hours}:${min}:00`;
+        timeParsed = `T${hours}:${min}:00`;
         dtParsed = dateparsed + timeParsed;
 
         console.log("Termino: " + dtParsed);
@@ -507,6 +553,11 @@ export default {
         console.log(err);
       }
       return "-";
+    },
+    formatMenuDate(date) {
+      if (!date) return null;
+      const [year, month, day] = date.split("-");
+      return `${day}/${month}/${year}`;
     },
   },
 };
