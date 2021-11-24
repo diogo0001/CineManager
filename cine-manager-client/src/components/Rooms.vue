@@ -47,11 +47,13 @@
               transition="dialog-bottom-transition"
             >
               <v-card class="room">
-                <v-toolbar dark color="rgb(19, 95, 124)">
+                <v-toolbar dark color="rgb(19, 95, 124)">                                   
+                  <v-icon class="mr-4">mdi-google-classroom</v-icon>
+                  <v-toolbar-title>{{ selectedRow }}</v-toolbar-title>
+                  <v-spacer></v-spacer>
                   <v-btn icon dark @click="dialog = false">
                     <v-icon>mdi-close</v-icon>
                   </v-btn>
-                  <v-toolbar-title>{{ selectedRow }}</v-toolbar-title>
                 </v-toolbar>
                 <img src="../assets/seats.png" alt="sala" />
               </v-card>

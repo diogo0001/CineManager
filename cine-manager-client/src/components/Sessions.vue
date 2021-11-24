@@ -65,7 +65,7 @@
                         </v-col>
                         <v-col cols="6">
                           <v-select
-                            v-model="editedItem.animation"
+                            v-model="animation"
                             :items="animations"
                             label="Animação"
                             outlined
@@ -75,7 +75,7 @@
                         </v-col>
                         <v-col cols="6">
                           <v-select
-                            v-model="editedItem.audio"
+                            v-model="audio"
                             :items="audios"
                             label="Audio"
                             outlined
@@ -86,7 +86,7 @@
                         <v-col cols="6">
                           <v-text-field
                             type="text"
-                            v-model="editedItem.date"
+                            v-model="date"
                             label="Data"
                             placeholder="dd/mm/aaaa"
                             outlined
@@ -97,7 +97,7 @@
                         <v-col cols="6">
                           <v-text-field
                             type="text"
-                            v-model="editedItem.iniTime"
+                            v-model="iniTime"
                             label="Início"
                             placeholder="HH:MM"
                             outlined
@@ -108,7 +108,7 @@
                         <v-col cols="6">
                           <v-text-field
                             type="text"
-                            v-model="editedItem.ticketPrice"
+                            v-model="ticketPrice"
                             label="Ingresso (R$)"
                             outlined
                             dense
@@ -179,18 +179,6 @@ import {
 
 import SideBar from "./SideBar.vue";
 
-const itemInitial = {
-  sessionId: null,
-  iniTime: null,
-  endTime: null,
-  ticketPrice: null,
-  animation: null,
-  audio: null,
-  room: null,
-  movie: null,
-  date: null,
-};
-
 export default {
   name: "Sessions",
   components: {
@@ -203,17 +191,20 @@ export default {
     movies: [],
     rooms: [],
     animations: ["2D", "3D"],
-    audios: ["Dublado", "Lagendado"],
+    audios: ["Dublado", "Legendado"],
     title: "Sessões",
     titleAddItem: "Adicionar Sessão",
-    editedItem: itemInitial,
-    defaultItem: itemInitial,
+    sessionId:'',
+    date: "",
+    iniTime: "",
+    ticketPrice: "",
+    animation: "",
+    audio: "",
     selectedMovie: { name: "", id: "" },
     selectedRoom: { name: "", id: "" },
     search: "",
     dialog: false,
     dialogDelete: false,
-    editedIndex: -1,
     isLoading: true,
     relationshipLoaded: false,
   }),
@@ -234,65 +225,53 @@ export default {
   },
   methods: {
     deleteItem(item) {
-      this.editedIndex = this.items.indexOf(item);
-      this.editedItem = Object.assign({}, item);
+      this.sessionId = item.sessionId;
       this.dialogDelete = true;
     },
 
     deleteItemConfirm() {
-      console.log("Delete session" + JSON.stringify(this.editedItem));
+      console.log("Delete session id " + this.sessionId);
 
-      deleteSession(this.editedItem.sessionId)
+      deleteSession(this.sessionId)
         .then((res) => {
           console.log(res);
           this.$notify({
-              text: 'Sessão deletada com sucesso!',
-              type:'success'
-            });
+            text: "Sessão deletada com sucesso!",
+            type: "success",
+          });
           this.loadData();
         })
         .catch((err) => {
           console.log(err);
           this.$notify({
-              text: "Falha ao deletar sessão! "+ err.response.data,
-              type:'error'
-            });
+            text: "Falha ao deletar sessão! " + err.response.data,
+            type: "error",
+          });
         });
       this.closeDelete();
     },
     close() {
       this.dialog = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
     },
     closeDelete() {
       this.dialogDelete = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
     },
     save() {
       // TODO: fazer validações
 
-      const iniTime = this.parseSetDateTime(
-        this.editedItem.date,
-        this.editedItem.iniTime
-      );
+      const iniTime = this.parseSetDateTime(this.date, this.iniTime);
       const endTime = this.parseSetDateTime(
-        this.editedItem.date,
-        this.editedItem.iniTime,
+        this.date,
+        this.iniTime,
         this.selectedMovie.duration
       );
 
       const session = {
         iniTime: iniTime,
         endTime: endTime,
-        ticketPrice: this.editedItem.ticketPrice,
-        animation: this.editedItem.animation,
-        audio: this.editedItem.audio,
+        ticketPrice: this.ticketPrice,
+        animation: this.animation,
+        audio: this.audio,
         movieId: this.selectedMovie.id,
         roomId: this.selectedRoom.id,
       };
@@ -302,29 +281,55 @@ export default {
       if (iniTime != "-" && (endTime != "-" || endTime != "Invalid Date")) {
         createSession(session)
           .then((res) => {
-            console.log(res);
-            this.items.push(this.editedItem);
-            this.editedItem = this.defaultItem;
+            console.log(res.data);
+            const obj = this.formatData(res.data);
+            this.items.push(obj);
             this.$notify({
-              text: 'Sessão salva com sucesso! ',
-              type:'success'
+              text: "Sessão salva com sucesso! ",
+              type: "success",
             });
           })
           .catch((err) => {
             console.log(err);
             this.$notify({
-              text: 'Falha ao salvar sessão! '+err.response.data,
-              type:'error'
+              text: "Falha ao salvar sessão! " + err.response.data,
+              type: "error",
             });
+          })
+          .finally(() => {
+            this.resetData();
           });
       } else {
         console.log("Data ou horário inválidos");
-         this.$notify({
-              text: 'Data ou horário inválidos ',
-              type:'error'
-            });
+        this.$notify({
+          text: "Data ou horário inválidos ",
+          type: "error",
+        });
       }
       this.close();
+    },
+    formatData(item) {
+      const obj = {
+        sessionId: item.sessionId,
+        movie: this.getRelationshipItem(item.movieId, this.movies),
+        room: this.getRelationshipItem(item.roomId, this.rooms),
+        date: this.parseGetDateTime(item.iniTime, false),
+        iniTime: this.parseGetDateTime(item.iniTime),
+        endTime: this.parseGetDateTime(item.endTime),
+        ticketPrice: item.ticketPrice,
+        animation: item.animation,
+        audio: item.audio,
+      };
+      return obj;
+    },
+    resetData() {
+      this.date = "";
+      this.iniTime = "";
+      this.ticketPrice = "";
+      this.animation = "";
+      this.audio = "";
+      this.selectedMovie = { name: "", id: "" };
+      this.selectedRoom = { name: "", id: "" };
     },
     loadData() {
       this.isLoading = true;
@@ -335,17 +340,7 @@ export default {
           .then((res) => {
             const data = res.data;
             data.map((item) => {
-              let obj = {
-                sessionId: item.sessionId,
-                movie: this.getRelationshipItem(item.movieId, this.movies),
-                room: this.getRelationshipItem(item.roomId, this.rooms),
-                date: this.parseGetDateTime(item.iniTime, false),
-                iniTime: this.parseGetDateTime(item.iniTime),
-                endTime: this.parseGetDateTime(item.endTime),
-                ticketPrice: item.ticketPrice,
-                animation: item.animation,
-                audio: item.audio,
-              };
+              const obj = this.formatData(item);
               items.push(obj);
             });
             this.items = items;
@@ -353,8 +348,8 @@ export default {
           .catch((err) => {
             console.log(err);
             this.$notify({
-              text: 'Falha ao carregar sessões!\n '+err.response.data,
-              type:'error'
+              text: "Falha ao carregar sessões!\n " + err.response.data,
+              type: "error",
             });
           })
           .finally(() => {
@@ -482,7 +477,7 @@ export default {
       if (time) {
         return `${dt.getHours()}:${dt.getMinutes()}`;
       }
-      return `${dt.getDate()}/${dt.getMonth()}/${dt.getFullYear()}`;
+      return `${dt.getDate()}/${dt.getMonth() + 1}/${dt.getFullYear()}`;
     },
 
     parseSetDateTime(date, time, duration = 0) {
