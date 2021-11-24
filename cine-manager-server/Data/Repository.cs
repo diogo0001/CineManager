@@ -98,7 +98,8 @@ namespace CineManager.Data
         //Session
         public async Task<Sessions[]> GetAllSessionsAsync(bool includeRoom = true, bool includeMovie = true)
         {
-            IQueryable<Sessions> query = _context.Sessions;
+            DateTime dateNow = DateTime.Now;
+            IQueryable<Sessions> query = _context.Sessions.Where(Session => Session.IniTime >= dateNow);
 
             if (includeRoom)
             {
