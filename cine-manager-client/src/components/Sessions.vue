@@ -106,30 +106,40 @@
                             </template>
                             <v-date-picker
                               v-model="date"
-                              no-title
                               @input="menu1 = false"
                             ></v-date-picker>
                           </v-menu>
-                          <!-- <v-text-field
-                            type="text"
-                            v-model="date"
-                            label="Data"
-                            placeholder="dd/mm/aaaa"
-                            outlined
-                            dense
-                            required
-                          ></v-text-field> -->
                         </v-col>
                         <v-col cols="6">
-                          <v-text-field
-                            type="text"
-                            v-model="iniTime"
-                            label="Início"
-                            placeholder="HH:MM"
-                            outlined
-                            dense
-                            required
-                          ></v-text-field>
+                          <v-menu
+                            ref="menu2"
+                            v-model="menu2"
+                            :close-on-content-click="false"
+                            transition="scale-transition"
+                            offset-y
+                            max-width="290px"
+                            min-width="auto"
+                          >
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-text-field
+                                v-model="iniTime"
+                                label="Início"
+                                placeholder="hh:mm"
+                                v-bind="attrs"
+                                v-on="on"
+                                outlined
+                                dense
+                              ></v-text-field>
+                            </template>
+                            <v-time-picker
+                              v-model="iniTime"
+                              class="mt-4"
+                              format="24hr"
+                              scrollable
+                              min="8:00"
+                              max="22:00"
+                            ></v-time-picker>
+                          </v-menu>
                         </v-col>
                         <v-col cols="6">
                           <v-text-field
@@ -225,7 +235,7 @@ export default {
       .toISOString()
       .substr(0, 10),
     dateFormatted: "",
-    iniTime: "",
+    iniTime: "13:00",
     ticketPrice: "",
     animation: "",
     audio: "",
@@ -233,6 +243,7 @@ export default {
     selectedRoom: { name: "", id: "" },
     search: "",
     menu1: false,
+    menu2: false,
     dialog: false,
     dialogDelete: false,
     isLoading: true,
@@ -370,7 +381,7 @@ export default {
           .toISOString()
           .substr(0, 10)
       )),
-        (this.iniTime = "");
+        (this.iniTime = "13:00");
       this.ticketPrice = "";
       this.animation = "";
       this.audio = "";
@@ -530,7 +541,7 @@ export default {
       // TODO: usar regex e fazer validação dos campos
       try {
         // let dateSplited = date.split("/");
-        let dateparsed = date;  // `${dateSplited[2]}-${dateSplited[1]}-${dateSplited[0]}T`;
+        let dateparsed = date; // `${dateSplited[2]}-${dateSplited[1]}-${dateSplited[0]}T`;
         let timeParsed = `T${time}:00`;
         let dtParsed = dateparsed + timeParsed;
 
